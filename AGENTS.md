@@ -4,12 +4,12 @@ Guidance for AI coding agents working in **shut**.
 
 ## Project overview
 
-A Bluesky labeller that applies `incel-language` to posts and profiles, with a static website. No
-public instance is running; do not write as though one is.
+A Bluesky labeller that applies `incel-language` to posts and profiles, with a static website. The
+public instance is `@shut.croft.click`, served from `https://shut-labeller.croft.click`.
 
 - Language: TypeScript; Svelte 5 and SvelteKit 3 for the website
 - Tooling: pnpm workspace, Node.js 22.17 or newer
-- Intended website origin: `https://shut.croft.click`
+- Website: `https://shut.croft.click`, deployed to Vercel with `website/` as the root directory
 - Default branch: main
 
 ## Read first
@@ -23,6 +23,7 @@ public instance is running; do not write as though one is.
 
 - `labeller/src/detect/` judges text. It must stay free of Node-only APIs, because the website
   runs it in the browser.
+- `labeller/src/account/` turns an account into the labeller.
 - `labeller/src/label/` decides and stores labels.
 - `labeller/src/stream/` tracks the Jetstream position.
 - `labeller/src/server/` runs the service; `labeller/src/cli/` holds one-off commands.
@@ -40,7 +41,7 @@ public instance is running; do not write as though one is.
 - Treat generated files, credentials, deployment configuration, and release metadata as sensitive.
 - Word list changes follow `CONTRIBUTING.md`.
 - Treat the signing key, account password, `.env` and `data/` as sensitive.
-- `pnpm declare --publish`, `pnpm setup-account` and starting the server with real credentials
+- `pnpm activate`, `pnpm declare --publish`, `pnpm setup-account` and starting the server with real credentials
   change a public account. Do not run them without being asked.
 - `pnpm-workspace.yaml` overrides Fastify to v5 because `@skyware/labeler` 0.2.0 pins a vulnerable
   v4. Keep the integration tests passing when changing either.

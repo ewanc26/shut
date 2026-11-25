@@ -12,11 +12,9 @@ It watches new posts and profile edits, and labels the ones using incel vocabula
 
 > Independent project; see the [trademark notice](TRADEMARKS.md).
 
-## Current state
+## Subscribe
 
-- The labeller and its website are built and tested.
-- **No public instance is running.** There is no account to subscribe to yet.
-- The website is intended for `https://shut.croft.click` and is not deployed.
+Open [@shut.croft.click](https://bsky.app/profile/shut.croft.click) on Bluesky and subscribe to the labeller. Labelling started on 25 November 2026; earlier posts are not covered. The website is at [shut.croft.click](https://shut.croft.click).
 
 ## What gets labelled
 
@@ -51,33 +49,16 @@ pnpm dev                 # the website, with a try-it box
 
 ## Go live
 
-You need a **new Bluesky account** for the labeller (for example with the handle `shut`) and a public HTTPS address pointing at port 14831. WebSockets must be allowed through.
+To run your own, you need a **new Bluesky account** for the labeller and a public HTTPS address pointing at port 14831. WebSockets must be allowed through.
 
-1. Turn the account into a labeller. This asks for the account password and an emailed code, then adds the signing key and server address to the account's identity:
-
-   ```sh
-   pnpm setup-account
-   ```
-
-   Enter your HTTPS address and save the signing key it prints. When it asks you to define labels, press Esc.
-
-2. Configure:
+1. Configure, using the new account's DID and server address, and a new signing key:
 
    ```sh
-   cp .env.example .env   # set LABELER_DID and SIGNING_KEY
+   cp .env.example .env          # set LABELER_DID and PDS_URL
+   openssl rand -hex 32          # set the result as SIGNING_KEY, and back it up
    ```
 
-3. Publish the label definition. Without `--publish` it only prints it:
-
-   ```sh
-   read -rs LABELER_PASSWORD && export LABELER_PASSWORD
-   pnpm declare --publish
-   unset LABELER_PASSWORD
-   ```
-
-   Set `PDS_URL` if the account is not on `bsky.social`.
-
-4. Run it, either directly or in Docker:
+2. Run the server, either directly or in Docker, and point your HTTPS address at it:
 
    ```sh
    pnpm start
@@ -87,9 +68,15 @@ You need a **new Bluesky account** for the labeller (for example with the handle
 
    On Linux, make `data/` writable by user ID 1000 before using Docker.
 
-5. Open the account's profile in Bluesky and subscribe.
+3. In your own terminal, turn the account into a labeller:
 
-6. Set `LABELLER_HANDLE` in `website/src/lib/site/config.ts`, so the website links to it.
+   ```sh
+   pnpm activate https://labels.example
+   ```
+
+   It asks for the account password and an emailed code, adds the signing key and server address to the account's identity, publishes the label, and offers a profile if the account has none. It uses the same signing key as the server.
+
+4. Set `LABELLER_HANDLE` in `website/src/lib/site/config.ts`, so the website links to the account.
 
 ## Running it
 
