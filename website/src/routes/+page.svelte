@@ -7,7 +7,7 @@
 	const examples = [
 		'Cancel my Excel subscription',
 		'Total blackpill moment',
-		'Chad from accounting is on leave'
+		'How do you cope with night shifts?'
 	];
 
 	let text = $state('');
