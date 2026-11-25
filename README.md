@@ -111,6 +111,8 @@ Read these before turning it on:
 
 It never holds up labelling: one call runs at a time, gives up after 30 seconds, and anything over the limits is skipped. OpenCode keeps its files in `data/opencode/`, apart from any OpenCode setup on the machine. If you run a public instance with it on, update the privacy note on the website first.
 
+`pnpm learn 10` watches live posts for ten minutes and saves word counts to `data/judge-counts.json`, using the word list's own decisions as labels. It keeps only words seen in at least 20 posts, and no post text. Nothing reads the counts yet.
+
 ## Website
 
 A static SvelteKit site in `website/`. The try-it box runs the labeller's own detector in the browser.
