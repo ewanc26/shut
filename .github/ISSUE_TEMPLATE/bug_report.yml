@@ -1,0 +1,41 @@
+name: Bug Report
+description: Report a bug, a wrong label or a missed one
+title: '[Bug]: '
+labels: ['bug']
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened? What did you expect? Do not paste other people's names, handles or post links.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: For a wrong or missed label, a short made-up sentence that shows it is enough.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs, screenshots, or error output
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit / URL
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Wrong or missed label
+        - Labeller server
+        - Website
+        - Build / deployment
+        - Other
+    validations:
+      required: true
