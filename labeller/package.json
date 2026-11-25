@@ -18,7 +18,8 @@
 		"setup-account": "labeler setup",
 		"check": "tsc --noEmit",
 		"test": "vitest run",
-		"activate": "tsx --env-file-if-exists=../.env src/cli/activate.ts"
+		"activate": "tsx --env-file-if-exists=../.env src/cli/activate.ts",
+		"learn": "tsx src/cli/learn.ts"
 	},
 	"dependencies": {
 		"@atproto/crypto": "^0.5.8",
