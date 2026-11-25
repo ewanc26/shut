@@ -60,7 +60,7 @@ const labelled = [
 	'she wants a betabux',
 	'betabuxing for years',
 	'mgtow forums are full of ragefuel',
-	'chadpreet and the beta provider',
+	'giga chad and the beta provider',
 	// Evasion.
 	'#Foid_Logic',
 	'f_o_i_d',
@@ -79,7 +79,7 @@ const labelled = [
 	'#FoidLogic',
 	'#blackpill',
 	// Weak terms from two different groups.
-	'Chad gets everything while normies cope',
+	'Giga Chad gets everything while normies cope',
 	'her SMV drops and he calls it hypergamy, just LDAR',
 	'negative canthal tilt, it never began',
 	// Deliberate: criticism that repeats the vocabulary is muted too.
@@ -128,6 +128,8 @@ const ignored = [
 	'internet provider in beta',
 	'pure ragefuel, this referee',
 	'chadpreet is my cousin',
+	'chadpreet and the beta provider',
+	'Stacy and Becky and Tyrone on the team',
 	'wage packets and cuckoo clocks',
 	'a wrist mount for the mug',
 	'your FOID card was revoked',
@@ -157,6 +159,6 @@ describe('detect', () => {
 		assert.equal(detect(['normies', 'pure cope']).matched, true);
 	});
 	it('does not count several words from one weak group twice', () => {
-		assert.deepEqual(detect(['chad stacy becky tyrone']).weak, ['archetype']);
+		assert.deepEqual(detect(['giga chad stacy becky tyrone']).weak, ['archetype']);
 	});
 });

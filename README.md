@@ -27,8 +27,8 @@ Post text, hashtags, image and video alt text, link card titles and descriptions
 | Hit                                       | Examples                                                                                                                                                   | Result       |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
 | One distinctive term                      | "incel" itself, dehumanising names for women and men, `-cel` identities, black pill and looksmaxxing vocabulary, "mogging", glorification of incel attacks | labelled     |
-| Terms from two different ambiguous groups | "chad" with "cope", "hypergamy" with "normies"                                                                                                             | labelled     |
-| One ambiguous term                        | "chad", "cope", "red pill"                                                                                                                                 | not labelled |
+| Terms from two different ambiguous groups | "giga chad" with "cope", "hypergamy" with "normies"                                                                                                        | labelled     |
+| One ambiguous term                        | "giga chad", "cope", "red pill"                                                                                                                            | not labelled |
 
 Common disguises are undone first: lookalike and styled characters, accents, invisible characters, `f.o.i.d` spacing, number substitutions and stretched letters. The full list is in [`src/detect/lexicon.ts`](labeller/src/detect/lexicon.ts).
 

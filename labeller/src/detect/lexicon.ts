@@ -99,7 +99,9 @@ export const STRONG: readonly Rule[] = [
  * two different groups, so several words from one group never add up.
  */
 export const WEAK: Readonly<Record<string, string>> = {
-	archetype: '(?:giga[ -]?)?chads?|chadpreets?|stacys?|stacies|beckys?|beckies|tyrones?',
+	// Only the community's own compound: bare names such as Chad, Stacy, Becky and Tyrone are
+	// overwhelmingly people and products, and caused most ambiguous hits in a sample of 200.
+	archetype: 'giga[ -]?chads?',
 	roastie: 'roasties?',
 	pill: '(?:red|blue|black|purple)[ -]pills?|(?:red|blue)[ -]?pill(?:ed|er|ers|ing)?',
 	cope: 'cop(?:e|es|ing harder)',
