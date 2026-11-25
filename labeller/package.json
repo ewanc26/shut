@@ -1,0 +1,31 @@
+{
+	"name": "shut-labeller",
+	"private": true,
+	"version": "0.1.0",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		"./detect": "./src/detect/match.ts",
+		"./lexicon": "./src/detect/lexicon.ts",
+		"./label": "./src/label/definition.ts"
+	},
+	"scripts": {
+		"start": "tsx --env-file-if-exists=../.env src/server/main.ts",
+		"judge": "tsx src/cli/check.ts",
+		"sample": "tsx src/cli/sample.ts",
+		"declare": "tsx --env-file-if-exists=../.env src/cli/declare.ts",
+		"setup-account": "labeler setup",
+		"check": "tsc --noEmit",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@skyware/jetstream": "^0.2.5",
+		"@skyware/labeler": "^0.2.0",
+		"tsx": "^4.23.15"
+	},
+	"devDependencies": {
+		"@types/node": "^24.19.2",
+		"typescript": "^6.0.3",
+		"vitest": "^5.1.0"
+	}
+}

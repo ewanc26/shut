@@ -1,0 +1,13 @@
+packages:
+  - labeller
+  - website
+
+# esbuild links its native binary in postinstall; tsx and Vite both need it.
+allowBuilds:
+  esbuild: true
+
+# @skyware/labeler 0.2.0 pins Fastify 4, which has known vulnerabilities.
+
+overrides:
+  fastify: ^5.12.5
+  '@fastify/websocket': ^11.0.0

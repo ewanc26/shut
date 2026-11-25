@@ -6,7 +6,7 @@ services:
       HOST: 0.0.0.0
       DATA_DIR: /app/data
     ports:
-      - "127.0.0.1:14831:14831"
+      - '127.0.0.1:14831:14831'
     volumes:
       - ./data:/app/data
     restart: unless-stopped
