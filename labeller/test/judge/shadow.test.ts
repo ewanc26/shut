@@ -98,6 +98,45 @@ describe('shadowJudge', () => {
 		assert.equal(shadow.total().failed, 0);
 	});
 
+	it('waits an hour when a rate limit gives no time', async () => {
+		const { shadow, lines } = judge(async () => {
+			throw { status: 429 };
+		});
+		shadow.offer('at://a', ['a']);
+		await shadow.idle();
+		assert.equal(lines[0], 'judge paused by a rate limit until 2026-01-01T01:00:00.000Z');
+		await vi.advanceTimersByTimeAsync(60 * 60 * 1000 - 1);
+		assert.equal(shadow.total().calls, 1);
+		await vi.advanceTimersByTimeAsync(1);
+		assert.equal(shadow.total().calls, 2);
+	});
+
+	it('moves on to the next record after a failure', async () => {
+		const asked: string[] = [];
+		const { shadow } = judge(async ([text]) => {
+			asked.push(text ?? '');
+			if (text === 'a') throw new Error('timed out');
+			return answer('unclear');
+		});
+		shadow.offer('at://a', ['a']);
+		shadow.offer('at://b', ['b']);
+		await shadow.idle();
+		assert.deepEqual(asked, ['a', 'b']);
+		assert.equal(shadow.total().failed, 1);
+	});
+
+	it('discards the answer about a version edited during the call', async () => {
+		const { ask, asked, reply } = held();
+		const { shadow, lines } = judge(ask);
+		shadow.offer('at://a', ['old']);
+		shadow.offer('at://a', ['new']);
+		await reply('incel');
+		assert.deepEqual(lines, []);
+		await reply('incel');
+		assert.deepEqual(asked, ['old', 'new']);
+		assert.deepEqual(lines, ['judge would label at://a']);
+	});
+
 	it('holds records over the daily limit until the next day', async () => {
 		vi.setSystemTime(new Date('2026-01-01T23:00:00Z'));
 		const { shadow } = judge(async () => answer('unclear'), 1);

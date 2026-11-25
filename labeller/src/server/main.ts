@@ -2,6 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Jetstream } from '@skyware/jetstream';
 import { LabelerServer } from '@skyware/labeler';
+import { handOff } from '../judge/handoff.js';
 import { openHost } from '../judge/host.js';
 import { askModel, type Model } from '../judge/model.js';
 import { shadowJudge } from '../judge/shadow.js';
@@ -78,15 +79,12 @@ jetstream.on('commit', (event) => {
 				store,
 				config.did
 			);
-			// A record that was deleted or no longer needs an opinion must not be sent later.
-			if (outcome?.action !== 'ambiguous') judge?.forget(uri);
+			// Not awaited: a slow or failing model must not hold up the queue.
+			if (judge) handOff(judge, uri, outcome);
 			if (outcome?.action === 'labelled') {
 				const { strong, weak } = outcome.verdict;
 				console.log(`labelled ${outcome.uri} [${[...strong, ...weak].join(', ')}]`);
-			} else if (outcome?.action === 'ambiguous') {
-				// Not awaited: a slow or failing model must not hold up the queue.
-				judge?.offer(outcome.uri, outcome.segments);
-			} else if (outcome) {
+			} else if (outcome?.action === 'negated') {
 				console.log(`negated ${outcome.uri}`);
 			}
 			processed = event.time_us;
