@@ -40,7 +40,7 @@ export function prune(counts: Counts, minPosts = MIN_POSTS): Counts {
 	return { docs: { ...counts.docs }, words };
 }
 
-/** Log likelihood ratio per word, with add-one smoothing, as in the judge's classifier. */
+/** Log likelihood ratio per word, with add-one smoothing. */
 export function weights(counts: Counts): Map<string, number> {
 	const { pos, neg } = counts.docs;
 	const result = new Map<string, number>();
