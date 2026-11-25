@@ -153,7 +153,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and the checks required 
 
 ## Credits
 
-Dataset credit: the authors of [IYKYK: Using language models to decode extremist cryptolects](https://arxiv.org/abs/2506.05635):
+Use of the dataset from [IYKYK: Using language models to decode extremist cryptolects](https://arxiv.org/abs/2506.05635) is planned, not guaranteed. Nothing in shut uses it yet. Credit to its authors:
 
 ```bibtex
 @misc{dekock2025iykykusinglanguagemodels,
