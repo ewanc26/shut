@@ -4,12 +4,12 @@ Guidance for AI coding agents working in **shut**.
 
 ## Project overview
 
-A Bluesky labeller that applies `incel-language` to posts and profiles, with a static website. No
-public instance is running; do not write as though one is.
+A Bluesky labeller that applies `incel-language` to posts and profiles, with a static website. The
+public instance is `@shut.croft.click`.
 
 - Language: TypeScript; Svelte 5 and SvelteKit 3 for the website
 - Tooling: pnpm workspace, Node.js 22.17 or newer
-- Intended website origin: `https://shut.croft.click`
+- Website origin: `https://shut.croft.click`
 - Default branch: main
 
 ## Read first

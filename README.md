@@ -18,9 +18,8 @@ It watches new posts and profile edits, and labels the ones using incel vocabula
 
 ## Current state
 
-- The labeller and its website are built and tested.
-- **No public instance is running.** There is no account to subscribe to yet.
-- The website is intended for `https://shut.croft.click` and is not deployed.
+- The labeller is running. [Subscribe to @shut.croft.click](https://bsky.app/profile/shut.croft.click) on Bluesky.
+- The website is at <https://shut.croft.click>.
 
 ## What gets labelled
 
