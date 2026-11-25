@@ -36,7 +36,7 @@ Common disguises are undone first: lookalike and styled characters, accents, inv
 
 - **Matching is on words, not meaning.** Quoting or criticising a term gets labelled too. That is intended: the aim is not to see the language.
 - **Every mention of "incel" is labelled**, including news, research and insults. To keep those visible, remove the `incel` rule.
-- **Crossover slang is included.** "Mogging" and "looksmaxxing" are now widely used outside incel spaces. In a dry run on 25 November 2026, 216 of about 1.3 million posts matched: most for the word "incel", and 37 only for "mog" or "looksmaxxing" words. Remove the `mog` and `looksmaxx` rules if that is too much.
+- **Crossover slang is included.** "Mogging", "looksmaxxing" and "jestermaxxing" are now widely used outside incel spaces. In a dry run on 25 November 2026, 190 of about 1.3 million posts matched: most for the word "incel", and 36 only for "mog" or "looksmaxxing" words. Remove the `mog` and `looksmaxx` rules if that is too much.
 - **English terms only.** Text inside images and videos is not read.
 - **No backfill.** Only posts and profile edits seen while the labeller is running are labelled.
 
