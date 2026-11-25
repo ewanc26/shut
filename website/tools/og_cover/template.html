@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en-GB">
+	<head>
+		<meta charset="utf-8" />
+		<style>
+			/* @fonts */
+			html,
+			body {
+				margin: 0;
+				width: 1200px;
+				height: 630px;
+				overflow: hidden;
+				background: oklch(0.27 0.047 168);
+				color: oklch(0.95 0.028 90);
+				font-family: 'Atkinson Hyperlegible Next Variable', sans-serif;
+			}
+			h1,
+			.word {
+				font-family: 'Bricolage Grotesque Variable', sans-serif;
+				font-stretch: 75%;
+				font-weight: 800;
+			}
+			.copy {
+				position: absolute;
+				left: 72px;
+				top: 130px;
+				width: 520px;
+			}
+			h1 {
+				margin: 0;
+				font-size: 90px;
+				line-height: 1.02;
+			}
+			p {
+				font-size: 32px;
+				margin: 32px 0 0;
+			}
+			svg {
+				position: absolute;
+				left: 660px;
+				top: 60px;
+			}
+			.sign {
+				position: absolute;
+				left: 660px;
+				top: 170px;
+				width: 468px;
+				height: 320px;
+				box-sizing: border-box;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				text-transform: uppercase;
+				background: oklch(0.52 0.19 28);
+				border: 8px solid currentColor;
+				border-radius: 18px;
+				outline: 10px solid oklch(0.52 0.19 28);
+			}
+			.small {
+				font-size: 30px;
+				font-weight: 700;
+				letter-spacing: 0.18em;
+			}
+			.word {
+				font-size: 180px;
+				line-height: 0.95;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="copy">
+			<h1>Shut the door on incel language.</h1>
+			<p>A labeller for Bluesky.</p>
+		</div>
+		<svg width="468" height="104" viewBox="0 0 468 104">
+			<path d="M50 104 234 14 418 104" fill="none" stroke="oklch(0.8 0.11 85)" stroke-width="4" />
+			<circle cx="234" cy="14" r="10" fill="oklch(0.8 0.11 85)" />
+		</svg>
+		<div class="sign"><span class="small">Sorry, we’re</span><span class="word">Shut</span></div>
+	</body>
+</html>
