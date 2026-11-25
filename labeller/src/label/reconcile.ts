@@ -1,5 +1,6 @@
 import { detect, type Verdict } from '../detect/match.js';
 import { postText, profileText } from '../detect/record.js';
+import { isCandidate } from '../judge/candidate.js';
 import { LABEL } from './definition.js';
 
 export const POST = 'app.bsky.feed.post';
@@ -15,12 +16,6 @@ export interface Change {
 	record?: unknown;
 }
 
-/** A second opinion on records the word list leaves unlabelled. */
-export type Judge = (
-	segments: readonly string[],
-	verdict: Verdict
-) => { matched: boolean; probability: number } | undefined;
-
 export interface LabelStore {
 	/** The label currently in force on a subject, if any. */
 	active(uri: string): Promise<{ cid?: string } | undefined>;
@@ -31,8 +26,8 @@ export interface LabelStore {
 export type Outcome =
 	| { action: 'labelled'; uri: string; verdict: Verdict }
 	| { action: 'negated'; uri: string }
-	/** The judge would have labelled this. Nothing was written. */
-	| { action: 'suggested'; uri: string; probability: number }
+	/** Left unlabelled on one ambiguous group. Nothing was written. */
+	| { action: 'ambiguous'; uri: string; segments: string[] }
 	| undefined;
 
 /**
@@ -42,8 +37,7 @@ export type Outcome =
 export async function reconcile(
 	change: Change,
 	store: LabelStore,
-	exempt?: string,
-	judge?: Judge
+	exempt?: string
 ): Promise<Outcome> {
 	const { did, collection, rkey, operation, cid, record } = change;
 	const extract =
@@ -73,21 +67,6 @@ export async function reconcile(
 			return { action: 'negated', uri };
 		}
 	}
-	return verdict && judge ? suggest(judge, uri, segments, verdict) : undefined;
-}
-
-/** The judge is advisory, so its failure must never stop the labeller. */
-function suggest(
-	judge: Judge,
-	uri: string,
-	segments: readonly string[],
-	verdict: Verdict
-): Outcome {
-	try {
-		const opinion = judge(segments, verdict);
-		if (opinion?.matched) return { action: 'suggested', uri, probability: opinion.probability };
-	} catch (error) {
-		console.warn('The judge failed:', error);
-	}
+	if (verdict && isCandidate(verdict)) return { action: 'ambiguous', uri, segments };
 	return;
 }

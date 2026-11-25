@@ -2,7 +2,9 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Jetstream } from '@skyware/jetstream';
 import { LabelerServer } from '@skyware/labeler';
-import { secondOpinion } from '../judge/context.js';
+import { judgeClient } from '../judge/client.js';
+import { askModel } from '../judge/model.js';
+import { shadowJudge } from '../judge/shadow.js';
 import { COLLECTIONS, reconcile } from '../label/reconcile.js';
 import { serverStore } from '../label/store.js';
 import { loadCursor, saveCursor } from '../stream/cursor.js';
@@ -22,6 +24,15 @@ const server = new LabelerServer({
 	dbPath: join(config.dataDir, 'labels.db')
 });
 const store = await serverStore(server);
+
+function startJudge({ apiKey, dailyLimit }: { apiKey: string; dailyLimit: number }) {
+	const client = judgeClient(apiKey);
+	return shadowJudge({
+		ask: (segments, signal) => askModel(client, segments, signal),
+		dailyLimit
+	});
+}
+const judge = config.judge && startJudge(config.judge);
 
 await new Promise<void>((resolve, reject) => {
 	server.start({ host: config.host, port: config.port }, (error, address) => {
@@ -56,14 +67,14 @@ jetstream.on('commit', (event) => {
 					...(commit.operation === 'delete' ? {} : { cid: commit.cid, record: commit.record })
 				},
 				store,
-				config.did,
-				config.shadowJudge ? secondOpinion : undefined
+				config.did
 			);
 			if (outcome?.action === 'labelled') {
 				const { strong, weak } = outcome.verdict;
 				console.log(`labelled ${outcome.uri} [${[...strong, ...weak].join(', ')}]`);
-			} else if (outcome?.action === 'suggested') {
-				console.log(`judge would label ${outcome.uri} (${outcome.probability.toFixed(3)})`);
+			} else if (outcome?.action === 'ambiguous') {
+				// Not awaited: a slow or failing model must not hold up the queue.
+				judge?.offer(outcome.uri, outcome.segments);
 			} else if (outcome) {
 				console.log(`negated ${outcome.uri}`);
 			}
@@ -90,6 +101,7 @@ async function shutdown(code: number) {
 	if (stopping) return;
 	stopping = true;
 	clearInterval(saver);
+	judge?.close();
 	jetstream.close();
 	// Called from inside the queue on failure, so let that task finish first.
 	await new Promise(setImmediate);

@@ -7,8 +7,8 @@ export interface Config {
 	port: number;
 	dataDir: string;
 	jetstreamUrl: string | undefined;
-	/** Log what the experimental judge would label. It never writes labels. */
-	shadowJudge: boolean;
+	/** Set to log what the experimental judge would label. It never writes labels. */
+	judge: { apiKey: string; dailyLimit: number } | undefined;
 }
 
 export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -24,6 +24,9 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 		throw new Error('PORT must be a port number.');
 	const judge = env.AI_JUDGE?.trim() || 'off';
 	if (judge !== 'off' && judge !== 'shadow') throw new Error('AI_JUDGE must be off or shadow.');
+	const dailyLimit = Number(env.AI_JUDGE_DAILY_LIMIT?.trim() || 2000);
+	if (!Number.isInteger(dailyLimit) || dailyLimit < 1)
+		throw new Error('AI_JUDGE_DAILY_LIMIT must be a whole number above zero.');
 
 	return {
 		did,
@@ -32,6 +35,6 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 		port,
 		dataDir: env.DATA_DIR || fileURLToPath(new URL('../../../data', import.meta.url)),
 		jetstreamUrl: env.JETSTREAM_URL || undefined,
-		shadowJudge: judge === 'shadow'
+		judge: judge === 'shadow' ? { apiKey: required('ANTHROPIC_API_KEY'), dailyLimit } : undefined
 	};
 }

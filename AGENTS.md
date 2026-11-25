@@ -24,8 +24,9 @@ public instance is `@shut.croft.click`, served from `https://shut-labeller.croft
 - `labeller/src/detect/` judges text. It must stay free of Node-only APIs, because the website
   runs it in the browser.
 - `labeller/src/account/` turns an account into the labeller.
-- `labeller/src/judge/` is an experimental classifier that only logs. Do not let it write labels
-  without being asked, and never train it on real posts.
+- `labeller/src/judge/` asks a Claude model about ambiguous records and only logs. Do not let it
+  write labels without being asked. Its examples are invented; never add real posts. `pnpm evaluate`
+  and `AI_JUDGE=shadow` spend money, so do not run them without being asked.
 - `labeller/src/label/` decides and stores labels.
 - `labeller/src/stream/` tracks the Jetstream position.
 - `labeller/src/server/` runs the service; `labeller/src/cli/` holds one-off commands.

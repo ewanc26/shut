@@ -92,11 +92,21 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
 
 ## Experimental judge
 
-A very small naive Bayes classifier, in `labeller/src/judge/`, gives a second opinion on posts and profiles the word list leaves unlabelled because they hit only one ambiguous group. **It cannot write labels.** With `AI_JUDGE=shadow` the labeller logs the address of each record it would have labelled; the default is `off`. `pnpm judge "some text"` shows its opinion when it has one. The website's try-it box does not use it.
+Claude Haiku 5.5 can give a second opinion on posts and profiles the word list leaves unlabelled because they hit only one ambiguous group. **It cannot write labels.** It is off by default. To try it, set these in `.env`:
 
-It runs inside the labeller and sends text nowhere. It only looks at the sentence holding the ambiguous term, and only when that mentions both people of a sex and looks or dating.
+```sh
+AI_JUDGE=shadow
+ANTHROPIC_API_KEY=your-key
+```
 
-**It is not accurate enough to act on.** Its training data is a small set of invented sentences in `corpus.ts`. On 30 further invented sentences, also used while tuning it, it picked 10 of 15 written to sound like incel usage and none of the 15 ordinary ones, none of which reached the classifier. On real posts, early versions picked almost entirely unrelated text, and the current one picked 2 of 1,864 candidates, neither of them incel usage. That final count flatters it: the later runs reused mostly the same posts as the first, which it had been adjusted to reject, and some ordinary examples were written to resemble the first run's mistakes. How much real incel usage it finds was never measured. Improving it needs better examples, written for this project and never copied from real posts.
+The labeller then logs the address of each record it would have labelled, and running totals every 100 calls.
+
+- **Text leaves your server.** The whole text of each such record, including alt text and link card text, is sent to Anthropic. The author's DID and the record's address are not added to it.
+- **It costs money.** A rough, unmeasured estimate is a few US dollars a month. `AI_JUDGE_DAILY_LIMIT` (default 2000) caps calls per UTC day, counted afresh after a restart.
+- **It never holds up labelling.** At most four calls run at once, each gives up after 15 seconds with one retry, and anything over the limits is skipped.
+- **Its accuracy is unknown.** `pnpm evaluate` runs 16 invented sentences through the model and prints where it disagrees and the tokens used. It calls the API, so it costs a little. A good score there says little about real posts.
+
+If you run a public instance with it on, update the privacy note on the website first.
 
 ## Website
 
@@ -114,7 +124,7 @@ To deploy on Vercel, set the project's root directory to `website`; `website/ver
 
 ```text
 labeller/src/detect/    text normalisation, word list and verdicts
-labeller/src/judge/     experimental second opinion, log only
+labeller/src/judge/     experimental model opinion, log only
 labeller/src/label/     deciding and storing labels
 labeller/src/stream/    Jetstream position
 labeller/src/server/    the running service

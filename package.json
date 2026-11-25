@@ -23,6 +23,7 @@
 		"format": "prettier --write .",
 		"start": "pnpm --filter shut-labeller start",
 		"judge": "pnpm --filter shut-labeller judge",
+		"evaluate": "pnpm --filter shut-labeller evaluate",
 		"sample": "pnpm --filter shut-labeller sample",
 		"declare": "pnpm --filter shut-labeller declare",
 		"setup-account": "pnpm --filter shut-labeller setup-account",

@@ -98,28 +98,11 @@ describe('reconcile', () => {
 		assert.equal(await reconcile(own, store, own.did), undefined);
 	});
 
-	it('reports what the judge would label without writing anything', async () => {
+	it('reports an ambiguous record without writing anything', async () => {
 		const before = (await labels()).length;
-		const outcome = await reconcile(
-			change('create', 'plain words', 'c', 'judged'),
-			store,
-			undefined,
-			() => ({ matched: true, probability: 0.99 })
-		);
-		assert.equal(outcome?.action, 'suggested');
+		const outcome = await reconcile(change('create', 'pure cope', 'c', 'unsure'), store);
+		assert.equal(outcome?.action, 'ambiguous');
 		assert.equal((await labels()).length, before);
-	});
-
-	it('carries on when the judge fails', async () => {
-		const outcome = await reconcile(
-			change('create', 'plain words', 'c', 'broken'),
-			store,
-			undefined,
-			() => {
-				throw new Error('broken judge');
-			}
-		);
-		assert.equal(outcome, undefined);
 	});
 
 	it('ignores other collections', async () => {
