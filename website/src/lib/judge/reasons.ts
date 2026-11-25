@@ -30,7 +30,7 @@ export const STRONG_REASONS: Readonly<Record<string, string>> = {
 
 /** One entry for every weak group in the labeller's word list. */
 export const WEAK_REASONS: Readonly<Record<string, string>> = {
-	archetype: 'Stock character names',
+	archetype: 'A stock-character nickname',
 	roastie: 'A word that is also food',
 	pill: 'Coloured “pills”',
 	cope: '“Cope”',

@@ -49,7 +49,8 @@
 			</p>
 			<p class="mt-3">
 				The labeller reads public posts. It stores the labels it makes and its place in the stream,
-				not post text. Its logs note which posts were labelled and which rules matched.
+				not post text. Its logs note which posts were labelled and which rules matched. A separate
+				tool in the source can count words across public posts; it keeps counts, not posts.
 			</p>
 		</div>
 		<div>
