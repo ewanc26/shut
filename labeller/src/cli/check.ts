@@ -9,4 +9,5 @@ if (!text) {
 	console.error('Usage: pnpm judge "text to check"');
 	process.exit(2);
 }
-console.log(detect([text]));
+const verdict = detect([text]);
+console.log(verdict);

@@ -5,6 +5,8 @@ packages:
 # esbuild links its native binary in postinstall; tsx and Vite both need it.
 allowBuilds:
   esbuild: true
+  # Ships prebuilt binaries, so its from-source build script is not needed.
+  '@parcel/watcher': false
 
 # @skyware/labeler 0.2.0 pins Fastify 4, which has known vulnerabilities.
 

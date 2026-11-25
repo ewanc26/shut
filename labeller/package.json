@@ -12,6 +12,7 @@
 	"scripts": {
 		"start": "tsx --env-file-if-exists=../.env src/server/main.ts",
 		"judge": "tsx src/cli/check.ts",
+		"evaluate": "tsx --env-file-if-exists=../.env src/cli/evaluate.ts",
 		"sample": "tsx src/cli/sample.ts",
 		"declare": "tsx --env-file-if-exists=../.env src/cli/declare.ts",
 		"setup-account": "labeler setup",
@@ -21,6 +22,7 @@
 	},
 	"dependencies": {
 		"@atproto/crypto": "^0.5.8",
+		"@opencode/sdk": "2.4.1",
 		"@skyware/jetstream": "^0.2.5",
 		"@skyware/labeler": "^0.2.0",
 		"tsx": "^4.23.15"

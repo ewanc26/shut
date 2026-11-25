@@ -1,4 +1,5 @@
 import { fileURLToPath } from 'node:url';
+import { MODELS, type Model } from '../judge/model.js';
 
 export interface Config {
 	did: string;
@@ -7,6 +8,8 @@ export interface Config {
 	port: number;
 	dataDir: string;
 	jetstreamUrl: string | undefined;
+	/** Set to log what the experimental judge would label. It never writes labels. */
+	judge: { model: Model; dailyLimit: number } | undefined;
 }
 
 export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -20,6 +23,14 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 	const port = Number(env.PORT || 14831);
 	if (!Number.isInteger(port) || port < 1 || port > 65535)
 		throw new Error('PORT must be a port number.');
+	const judge = env.AI_JUDGE?.trim() || 'off';
+	if (judge !== 'off' && judge !== 'shadow') throw new Error('AI_JUDGE must be off or shadow.');
+	const dailyLimit = Number(env.AI_JUDGE_DAILY_LIMIT?.trim() || 200);
+	if (!Number.isInteger(dailyLimit) || dailyLimit < 1)
+		throw new Error('AI_JUDGE_DAILY_LIMIT must be a whole number above zero.');
+	const wanted = env.AI_JUDGE_MODEL?.trim() || MODELS[0];
+	const model = MODELS.find((known) => known === wanted);
+	if (!model) throw new Error(`AI_JUDGE_MODEL must be one of: ${MODELS.join(', ')}.`);
 
 	return {
 		did,
@@ -27,6 +38,7 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 		host: env.HOST || '127.0.0.1',
 		port,
 		dataDir: env.DATA_DIR || fileURLToPath(new URL('../../../data', import.meta.url)),
-		jetstreamUrl: env.JETSTREAM_URL || undefined
+		jetstreamUrl: env.JETSTREAM_URL || undefined,
+		judge: judge === 'shadow' ? { model, dailyLimit } : undefined
 	};
 }

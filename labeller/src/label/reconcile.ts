@@ -1,5 +1,6 @@
 import { detect, type Verdict } from '../detect/match.js';
 import { postText, profileText } from '../detect/record.js';
+import { isCandidate } from '../judge/candidate.js';
 import { LABEL } from './definition.js';
 
 export const POST = 'app.bsky.feed.post';
@@ -25,6 +26,8 @@ export interface LabelStore {
 export type Outcome =
 	| { action: 'labelled'; uri: string; verdict: Verdict }
 	| { action: 'negated'; uri: string }
+	/** Left unlabelled on one ambiguous group. Nothing was written. */
+	| { action: 'ambiguous'; uri: string; segments: string[] }
 	| undefined;
 
 /**
@@ -46,7 +49,8 @@ export async function reconcile(
 	if (!extract || did === exempt) return;
 
 	const uri = `at://${did}/${collection}/${rkey}`;
-	const verdict = operation === 'delete' ? undefined : detect(extract(record));
+	const segments = operation === 'delete' ? [] : extract(record);
+	const verdict = operation === 'delete' ? undefined : detect(segments);
 
 	if (verdict?.matched) {
 		const current = await store.active(uri);
@@ -56,9 +60,13 @@ export async function reconcile(
 	}
 
 	// A brand new record that does not match cannot have a label to withdraw.
-	if (operation === 'create') return;
-	const current = await store.active(uri);
-	if (!current) return;
-	await store.negate(uri, current.cid);
-	return { action: 'negated', uri };
+	if (operation !== 'create') {
+		const current = await store.active(uri);
+		if (current) {
+			await store.negate(uri, current.cid);
+			return { action: 'negated', uri };
+		}
+	}
+	if (verdict && isCandidate(verdict)) return { action: 'ambiguous', uri, segments };
+	return;
 }

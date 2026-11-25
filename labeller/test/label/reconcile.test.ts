@@ -98,6 +98,13 @@ describe('reconcile', () => {
 		assert.equal(await reconcile(own, store, own.did), undefined);
 	});
 
+	it('reports an ambiguous record without writing anything', async () => {
+		const before = (await labels()).length;
+		const outcome = await reconcile(change('create', 'pure cope', 'c', 'unsure'), store);
+		assert.equal(outcome?.action, 'ambiguous');
+		assert.equal((await labels()).length, before);
+	});
+
 	it('ignores other collections', async () => {
 		assert.equal(
 			await reconcile(
