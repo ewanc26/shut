@@ -96,7 +96,7 @@ A very small naive Bayes classifier, in `labeller/src/judge/`, gives a second op
 
 It runs inside the labeller and sends text nowhere. It only looks at the sentence holding the ambiguous term, and only when that mentions both people of a sex and looks or dating.
 
-**It is not accurate enough to act on.** Its training data is a small set of invented sentences in `corpus.ts`. On 30 further invented sentences, also used while tuning it, it picked 10 of 15 written to sound like incel usage and none of the 15 ordinary ones, none of which reached the classifier. On real posts, early versions picked almost entirely unrelated text, and the current one picked 2 of 1,864 candidates, neither of them incel usage. Improving it needs better examples, written for this project and never copied from real posts.
+**It is not accurate enough to act on.** Its training data is a small set of invented sentences in `corpus.ts`. On 30 further invented sentences, also used while tuning it, it picked 10 of 15 written to sound like incel usage and none of the 15 ordinary ones, none of which reached the classifier. On real posts, early versions picked almost entirely unrelated text, and the current one picked 2 of 1,864 candidates, neither of them incel usage. That final count flatters it: the later runs reused mostly the same posts as the first, which it had been adjusted to reject, and some ordinary examples were written to resemble the first run's mistakes. How much real incel usage it finds was never measured. Improving it needs better examples, written for this project and never copied from real posts.
 
 ## Website
 
