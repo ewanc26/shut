@@ -175,10 +175,10 @@ importers:
         version: 3.10.1
       prettier-plugin-svelte:
         specifier: ^4.2.0
-        version: 4.2.0(prettier@3.10.1)(svelte@5.59.1)
+        version: 4.2.0(prettier@3.10.1)(svelte@5.58.0)
       prettier-plugin-tailwindcss:
         specifier: ^0.8.1
-        version: 0.8.1(prettier-plugin-svelte@4.2.0(prettier@3.10.1)(svelte@5.59.1))(prettier@3.10.1)
+        version: 0.8.1(prettier-plugin-svelte@4.2.0(prettier@3.10.1)(svelte@5.58.0))(prettier@3.10.1)
 
   labeller:
     dependencies:
@@ -187,7 +187,7 @@ importers:
         version: 0.5.8
       '@opencode/sdk':
         specifier: 2.4.1
-        version: 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)(ws@8.23.0)
+        version: 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)(ws@8.23.0)
       '@skyware/jetstream':
         specifier: ^0.2.5
         version: 0.2.5
@@ -199,14 +199,14 @@ importers:
         version: 4.23.15
     devDependencies:
       '@types/node':
-        specifier: ^24.19.2
-        version: 24.19.2
+        specifier: ^26.6.6
+        version: 26.6.6
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
       vitest:
         specifier: ^5.1.0
-        version: 5.1.1(@opentelemetry/api@1.9.0)(@types/node@24.19.2)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+        version: 5.1.1(@opentelemetry/api@1.9.0)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
 
   website:
     dependencies:
@@ -222,25 +222,25 @@ importers:
     devDependencies:
       '@sveltejs/adapter-static':
         specifier: ^4.0.1
-        version: 4.0.1(@sveltejs/kit@3.4.0(@sveltejs/vite-plugin-svelte@7.3.2(svelte@5.59.1)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))
+        version: 4.0.1(@sveltejs/kit@3.4.0(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.58.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.58.0)(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))
       '@sveltejs/kit':
         specifier: ^3.4.0
-        version: 3.4.0(@sveltejs/vite-plugin-svelte@7.3.2(svelte@5.59.1)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+        version: 3.4.0(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.58.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.58.0)(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^7.3.1
-        version: 7.3.2(svelte@5.59.1)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+        version: 7.3.1(svelte@5.58.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       '@tailwindcss/vite':
         specifier: ^4.3.5
-        version: 4.3.5(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+        version: 4.3.5(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       '@types/node':
-        specifier: ^24.19.2
-        version: 24.19.2
+        specifier: ^26.6.6
+        version: 26.6.6
       svelte:
         specifier: ^5.57.3
-        version: 5.59.1
+        version: 5.58.0
       svelte-check:
         specifier: ^4.7.8
-        version: 4.7.8(picomatch@4.0.7)(svelte@5.59.1)(typescript@6.0.3)
+        version: 4.7.8(picomatch@4.0.7)(svelte@5.58.0)(typescript@6.0.3)
       tailwindcss:
         specifier: ^4.3.5
         version: 4.3.5
@@ -249,10 +249,10 @@ importers:
         version: 6.0.3
       vite:
         specifier: ^8.3.8
-        version: 8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
+        version: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
       vitest:
         specifier: ^5.1.0
-        version: 5.1.1(@types/node@24.19.2)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+        version: 5.1.1(@opentelemetry/api@1.9.0)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
 
 packages:
 
@@ -1635,8 +1635,8 @@ packages:
     resolution: {integrity: sha512-VT3qmUb8pRV2QrZjd8iAmtg8lf4W0TIjZbvXtz5MKei/q96teWZgGJyyidJzOjzZzvdq616eSRVeMYIQChUTAQ==}
     engines: {node: '>= 18.0.0'}
 
-  '@sveltejs/vite-plugin-svelte@7.3.2':
-    resolution: {integrity: sha512-86J4nBLeTqYYIx/paBIRqYJMFYlpTS2sepUdQ6tUyU1jxqRV72ejOrIV2wsqlOsKlkM+h0G1SgwoHI30N+n9CA==}
+  '@sveltejs/vite-plugin-svelte@7.3.1':
+    resolution: {integrity: sha512-ZPsLN8B1e/En+Ak5s4V7srFDT532oS0qieLsQwu63NGKsS+iAjoO2Js1BochlHlglcU+Pt7WAO3C5Ee+4f6gVA==}
     engines: {node: ^20.19 || ^22.12 || >=24}
     peerDependencies:
       svelte: ^5.46.4
@@ -1755,8 +1755,8 @@ packages:
   '@types/estree@1.0.10':
     resolution: {integrity: sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g==}
 
-  '@types/node@24.19.2':
-    resolution: {integrity: sha512-93d49wCWJkCyN87MxLpNN6KXPCwFw7bVUg79mGUV1OS40JGWwVCr8n61DXCSqz7CV6/VfPkb7xec7uP2M+QHWQ==}
+  '@types/node@26.6.6':
+    resolution: {integrity: sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog==}
 
   '@types/ws@8.18.2':
     resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
@@ -2877,6 +2877,10 @@ packages:
     resolution: {integrity: sha512-TakBap6OM1w0H73VZVDf44iFXsOS3h+L4wVMXmbWOQroZgFhMch0juN6XSzBNlD965yIKvWg2dfu7NSiaYLxtw==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
+  obug@2.2.1:
+    resolution: {integrity: sha512-XrsrhT5sybtKI6wakr2SPOlGZWWYbUXZ7a0jT8/QOeAPau+1X/bSegNe5YR75oJmEZQbKningirmGOEJCIk61Q==}
+    engines: {node: '>=12.20.0'}
+
   obug@3.0.0:
     resolution: {integrity: sha512-5vvB5+W7ePv+p3uqxi+RcW1XAzLW0/hxt3/4X4Lc4qHudzOhmBiBwOY6DRob4WnanAEGvNcLjF+KNOufrUoEQw==}
     engines: {node: '>=12.20.0'}
@@ -3289,8 +3293,8 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: ^5.0.0 || ^6.0.0
 
-  svelte@5.59.1:
-    resolution: {integrity: sha512-ADG20W/jYSQut/79AavRRfbXQYebFKMVWT/xAbjVVZfZA4XzIoFfcpanEfYTyN+uWQUaPP+nstFx4qVKwEVnQQ==}
+  svelte@5.58.0:
+    resolution: {integrity: sha512-rOMKTD9WP2C6ahWDmntey4p+JqUxtup1w9G3KdVuTbNGHi5u97iMw0CIc8a+F5rZtiH7x98kVniDlBRRR5e98w==}
     engines: {node: '>=18'}
 
   tailwindcss@4.3.5:
@@ -3365,8 +3369,8 @@ packages:
   uint8arrays@5.1.1:
     resolution: {integrity: sha512-9muQwa4wZG4dKi9gMAIBtnk2Pw87SRpvWTH6lOGm19V2Uqxr4uomUf2PGqPnWc+qs06sN8owUU4jfcoWOcfwVQ==}
 
-  undici-types@7.24.6:
-    resolution: {integrity: sha512-WRNW+sJgj5OBN4/0JpHFqtqzhpbnV0GuB+OozA9gCL7a993SmU+1JBZCzLNxYsbMfIeDL+lTsphD5jN5N+n0zg==}
+  undici-types@8.9.0:
+    resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
   undici@6.29.1:
     resolution: {integrity: sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==}
@@ -4477,7 +4481,7 @@ snapshots:
       effect: 4.1.0
       psychoscript: 0.2.1(effect@4.1.0)
 
-  '@opencode/core@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.21.0)':
+  '@opencode/core@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.21.0)':
     dependencies:
       '@ai-sdk/provider': 3.0.19
       '@effect/platform-node': 4.1.0(effect@4.1.0)(redis@6.4.0(@opentelemetry/api@1.9.0))
@@ -4492,8 +4496,8 @@ snapshots:
       '@modelcontextprotocol/server': 2.4.0
       '@opencode/ai': 2.4.1
       '@opencode/codemode': 2.4.1
-      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
-      '@opencode/plugin-browser': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@opencode/plugin-browser': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       '@opencode/pty': 0.6.0
       '@opencode/schema': 2.4.1
       '@opencode/util': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(redis@6.4.0(@opentelemetry/api@1.9.0))
@@ -4585,7 +4589,7 @@ snapshots:
       - vite-plugin-solid
       - ws
 
-  '@opencode/core@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.23.0)':
+  '@opencode/core@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.23.0)':
     dependencies:
       '@ai-sdk/provider': 3.0.19
       '@effect/platform-node': 4.1.0(effect@4.1.0)(redis@6.4.0(@opentelemetry/api@1.9.0))
@@ -4600,8 +4604,8 @@ snapshots:
       '@modelcontextprotocol/server': 2.4.0
       '@opencode/ai': 2.4.1
       '@opencode/codemode': 2.4.1
-      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
-      '@opencode/plugin-browser': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@opencode/plugin-browser': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       '@opencode/pty': 0.6.0
       '@opencode/schema': 2.4.1
       '@opencode/util': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(redis@6.4.0(@opentelemetry/api@1.9.0))
@@ -4693,9 +4697,9 @@ snapshots:
       - vite-plugin-solid
       - ws
 
-  '@opencode/plugin-browser@2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
+  '@opencode/plugin-browser@2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
     dependencies:
-      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       '@opencode/schema': 2.4.1
       '@opencode/util': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(redis@6.4.0(@opentelemetry/api@1.9.0))
       effect: 4.1.0
@@ -4714,7 +4718,7 @@ snapshots:
       - vite
       - vite-plugin-solid
 
-  '@opencode/plugin@2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
+  '@opencode/plugin@2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
     dependencies:
       '@ai-sdk/provider': 3.0.8
       '@opencode/ai': 2.4.1
@@ -4725,7 +4729,7 @@ snapshots:
       effect: 4.1.0
     optionalDependencies:
       '@opentui/core': 0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10)
-      vite: 8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
     transitivePeerDependencies:
       - '@opentelemetry/sdk-trace-web'
       - '@opentelemetry/semantic-conventions'
@@ -4779,13 +4783,13 @@ snapshots:
       '@standard-schema/spec': 1.1.0
       effect: 4.1.0
 
-  '@opencode/sdk@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)(ws@8.23.0)':
+  '@opencode/sdk@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)(ws@8.23.0)':
     dependencies:
       '@opencode/client': 2.4.1(effect@4.1.0)
-      '@opencode/core': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.23.0)
-      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@opencode/core': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.23.0)
+      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       '@opencode/schema': 2.4.1
-      '@opencode/server': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)(ws@8.23.0)
+      '@opencode/server': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)(ws@8.23.0)
       '@opencode/util': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(redis@6.4.0(@opentelemetry/api@1.9.0))
       effect: 4.1.0
     transitivePeerDependencies:
@@ -4857,14 +4861,14 @@ snapshots:
       - web-tree-sitter
       - ws
 
-  '@opencode/server@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)(ws@8.23.0)':
+  '@opencode/server@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)(ws@8.23.0)':
     dependencies:
       '@effect/platform-node': 4.1.0(effect@4.1.0)(redis@6.4.0(@opentelemetry/api@1.9.0))
       '@effect/platform-node-shared': 4.1.0(effect@4.1.0)
-      '@opencode/core': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.23.0)
+      '@opencode/core': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.23.0)
       '@opencode/protocol': 2.4.1
       '@opencode/schema': 2.4.1
-      '@opencode/simulation': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)
+      '@opencode/simulation': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)
       '@opencode/util': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(redis@6.4.0(@opentelemetry/api@1.9.0))
       effect: 4.1.0
     transitivePeerDependencies:
@@ -4936,11 +4940,11 @@ snapshots:
       - web-tree-sitter
       - ws
 
-  '@opencode/simulation@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)':
+  '@opencode/simulation@2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(web-tree-sitter@0.25.10)':
     dependencies:
       '@opencode/ai': 2.4.1
-      '@opencode/core': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.21.0)
-      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@opencode/core': 2.4.1(@ai-sdk/provider-utils@5.0.83(zod@3.25.76))(@aws-sdk/credential-provider-node@3.972.99)(@libsql/client@0.14.0)(@opentelemetry/api@1.9.0)(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(@smithy/signature-v4@5.7.5)(graphql@16.15.0)(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))(ws@8.21.0)
+      '@opencode/plugin': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(@opentui/core@0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10))(redis@6.4.0(@opentelemetry/api@1.9.0))(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       '@opencode/protocol': 2.4.1
       '@opencode/util': 2.4.1(@opentelemetry/semantic-conventions@1.45.0)(redis@6.4.0(@opentelemetry/api@1.9.0))
       '@opentui/core': 0.9.4(typescript@6.0.3)(web-tree-sitter@0.25.10)
@@ -5444,36 +5448,38 @@ snapshots:
     dependencies:
       acorn: 8.19.0
 
-  '@sveltejs/adapter-static@4.0.1(@sveltejs/kit@3.4.0(@sveltejs/vite-plugin-svelte@7.3.2(svelte@5.59.1)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))':
+  '@sveltejs/adapter-static@4.0.1(@sveltejs/kit@3.4.0(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.58.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.58.0)(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))':
     dependencies:
-      '@sveltejs/kit': 3.4.0(@sveltejs/vite-plugin-svelte@7.3.2(svelte@5.59.1)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@sveltejs/kit': 3.4.0(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.58.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.58.0)(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
 
-  '@sveltejs/kit@3.4.0(@sveltejs/vite-plugin-svelte@7.3.2(svelte@5.59.1)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.59.1)(typescript@6.0.3)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
+  '@sveltejs/kit@3.4.0(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.58.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)))(svelte@5.58.0)(typescript@6.0.3)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@rolldown/pluginutils': 1.1.1
       '@standard-schema/spec': 1.1.0
-      '@sveltejs/vite-plugin-svelte': 7.3.2(svelte@5.59.1)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@sveltejs/vite-plugin-svelte': 7.3.1(svelte@5.58.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       cookie: 2.0.2
       devalue: 5.9.4
       esm-env: 1.2.2
       magic-string: 1.4.5
       mrmime: 2.0.1
       sirv: 3.0.2
-      svelte: 5.59.1
-      vite: 8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
+      svelte: 5.58.0
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
     optionalDependencies:
+      '@opentelemetry/api': 1.9.0
       typescript: 6.0.3
 
   '@sveltejs/load-config@0.2.3': {}
 
-  '@sveltejs/vite-plugin-svelte@7.3.2(svelte@5.59.1)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
+  '@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.58.0)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
     dependencies:
       deepmerge: 4.3.1
-      obug: 3.0.0
-      svelte: 5.59.1
-      vite: 8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
-      vitefu: 1.1.4(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      magic-string: 1.4.5
+      obug: 2.2.1
+      svelte: 5.58.0
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
+      vitefu: 1.1.4(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
 
   '@tailwindcss/node@4.3.5':
     dependencies:
@@ -5536,12 +5542,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.5
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.5
 
-  '@tailwindcss/vite@4.3.5(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
+  '@tailwindcss/vite@4.3.5(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
     dependencies:
       '@tailwindcss/node': 4.3.5
       '@tailwindcss/oxide': 4.3.5
       tailwindcss: 4.3.5
-      vite: 8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
 
   '@tufjs/canonical-json@2.0.0': {}
 
@@ -5564,22 +5570,22 @@ snapshots:
 
   '@types/estree@1.0.10': {}
 
-  '@types/node@24.19.2':
+  '@types/node@26.6.6':
     dependencies:
-      undici-types: 7.24.6
+      undici-types: 8.9.0
 
   '@types/ws@8.18.2':
     dependencies:
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
 
-  '@vitest/mocker@5.1.1(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
+  '@vitest/mocker@5.1.1(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.1.1
       estree-walker: 3.0.3
       magic-string: 1.4.5
     optionalDependencies:
-      vite: 8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
 
   '@vitest/spy@5.1.1': {}
 
@@ -6547,6 +6553,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  obug@2.2.1: {}
+
   obug@3.0.0: {}
 
   on-exit-leak-free@2.1.2: {}
@@ -6666,16 +6674,16 @@ snapshots:
 
   powershell-utils@0.2.1: {}
 
-  prettier-plugin-svelte@4.2.0(prettier@3.10.1)(svelte@5.59.1):
+  prettier-plugin-svelte@4.2.0(prettier@3.10.1)(svelte@5.58.0):
     dependencies:
       prettier: 3.10.1
-      svelte: 5.59.1
+      svelte: 5.58.0
 
-  prettier-plugin-tailwindcss@0.8.1(prettier-plugin-svelte@4.2.0(prettier@3.10.1)(svelte@5.59.1))(prettier@3.10.1):
+  prettier-plugin-tailwindcss@0.8.1(prettier-plugin-svelte@4.2.0(prettier@3.10.1)(svelte@5.58.0))(prettier@3.10.1):
     dependencies:
       prettier: 3.10.1
     optionalDependencies:
-      prettier-plugin-svelte: 4.2.0(prettier@3.10.1)(svelte@5.59.1)
+      prettier-plugin-svelte: 4.2.0(prettier@3.10.1)(svelte@5.58.0)
 
   prettier@3.10.1: {}
 
@@ -6918,7 +6926,7 @@ snapshots:
 
   strip-bom-string@1.0.0: {}
 
-  svelte-check@4.7.8(picomatch@4.0.7)(svelte@5.59.1)(typescript@6.0.3):
+  svelte-check@4.7.8(picomatch@4.0.7)(svelte@5.58.0)(typescript@6.0.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@sveltejs/load-config': 0.2.3
@@ -6926,12 +6934,12 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.7)
       picocolors: 1.1.1
       sade: 1.8.1
-      svelte: 5.59.1
+      svelte: 5.58.0
       typescript: 6.0.3
     transitivePeerDependencies:
       - picomatch
 
-  svelte@5.59.1:
+  svelte@5.58.0:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       '@jridgewell/sourcemap-codec': 1.6.0
@@ -7014,7 +7022,7 @@ snapshots:
     dependencies:
       multiformats: 13.4.2
 
-  undici-types@7.24.6: {}
+  undici-types@8.9.0: {}
 
   undici@6.29.1: {}
 
@@ -7026,7 +7034,7 @@ snapshots:
 
   validate-npm-package-name@7.0.2: {}
 
-  vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15):
+  vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -7034,20 +7042,20 @@ snapshots:
       rolldown: 1.2.19
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
       esbuild: 0.28.2
       fsevents: 2.3.3
       jiti: 2.7.0
       tsx: 4.23.15
 
-  vitefu@1.1.4(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)):
+  vitefu@1.1.4(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)):
     optionalDependencies:
-      vite: 8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
 
-  vitest@5.1.1(@opentelemetry/api@1.9.0)(@types/node@24.19.2)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)):
+  vitest@5.1.1(@opentelemetry/api@1.9.0)(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.1.1(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+      '@vitest/mocker': 5.1.1(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -7058,32 +7066,11 @@ snapshots:
       tinybench: 6.2.5
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
-      vite: 8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
+      vite: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
       why-is-node-running: 3.2.1
     optionalDependencies:
       '@opentelemetry/api': 1.9.0
-      '@types/node': 24.19.2
-    transitivePeerDependencies:
-      - msw
-
-  vitest@5.1.1(@types/node@24.19.2)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)):
-    dependencies:
-      '@types/chai': 5.2.3
-      '@vitest/mocker': 5.1.1(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
-      chai: 6.3.0
-      es-module-lexer: 2.3.2
-      expect-type: 1.4.0
-      magic-string: 1.4.5
-      obug: 3.0.0
-      picomatch: 4.0.7
-      std-env: 4.3.0
-      tinybench: 6.2.5
-      tinyexec: 1.3.1
-      tinyglobby: 0.2.17
-      vite: 8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)
-      why-is-node-running: 3.2.1
-    optionalDependencies:
-      '@types/node': 24.19.2
+      '@types/node': 26.6.6
     transitivePeerDependencies:
       - msw
 
