@@ -1,0 +1,10 @@
+# Runs prettier on staged JS/TS/JSON/YAML/MD/CSS/Svelte files before every commit
+repos:
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        entry: npx prettier --write --ignore-unknown
+        language: system
+        types_or: [javascript, ts, json, yaml, markdown, css, svelte]
+        pass_filenames: true
