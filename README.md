@@ -90,6 +90,14 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
 - To withdraw a wrong label by hand, send a negation as the labeller account through `tools.ozone.moderation.emitEvent`, for example from [Ozone-compatible tooling](https://skyware.js.org/docs/labeler). A later matching edit labels the record again.
 - In-app reports and appeals are not accepted. Put a contact route in the account's bio.
 
+## Experimental judge
+
+A very small naive Bayes classifier, in `labeller/src/judge/`, gives a second opinion on posts and profiles the word list leaves unlabelled because they hit only one ambiguous group. **It cannot write labels.** With `AI_JUDGE=shadow` the labeller logs the address of each record it would have labelled; the default is `off`. `pnpm judge "some text"` shows its opinion when it has one. The website's try-it box does not use it.
+
+It runs inside the labeller and sends text nowhere. It only looks at the sentence holding the ambiguous term, and only when that mentions both people of a sex and looks or dating.
+
+**It is not accurate enough to act on.** Its training data is a small set of invented sentences in `corpus.ts`. On 30 further invented sentences, also used while tuning it, it picked 10 of 15 written to sound like incel usage and none of the 15 ordinary ones, none of which reached the classifier. On real posts, early versions picked almost entirely unrelated text, and the current one picked 2 of 1,864 candidates, neither of them incel usage. Improving it needs better examples, written for this project and never copied from real posts.
+
 ## Website
 
 A static SvelteKit site in `website/`. The try-it box runs the labeller's own detector in the browser.
@@ -106,6 +114,7 @@ To deploy on Vercel, set the project's root directory to `website`; `website/ver
 
 ```text
 labeller/src/detect/    text normalisation, word list and verdicts
+labeller/src/judge/     experimental second opinion, log only
 labeller/src/label/     deciding and storing labels
 labeller/src/stream/    Jetstream position
 labeller/src/server/    the running service

@@ -2,6 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Jetstream } from '@skyware/jetstream';
 import { LabelerServer } from '@skyware/labeler';
+import { secondOpinion } from '../judge/context.js';
 import { COLLECTIONS, reconcile } from '../label/reconcile.js';
 import { serverStore } from '../label/store.js';
 import { loadCursor, saveCursor } from '../stream/cursor.js';
@@ -55,11 +56,14 @@ jetstream.on('commit', (event) => {
 					...(commit.operation === 'delete' ? {} : { cid: commit.cid, record: commit.record })
 				},
 				store,
-				config.did
+				config.did,
+				config.shadowJudge ? secondOpinion : undefined
 			);
 			if (outcome?.action === 'labelled') {
 				const { strong, weak } = outcome.verdict;
 				console.log(`labelled ${outcome.uri} [${[...strong, ...weak].join(', ')}]`);
+			} else if (outcome?.action === 'suggested') {
+				console.log(`judge would label ${outcome.uri} (${outcome.probability.toFixed(3)})`);
 			} else if (outcome) {
 				console.log(`negated ${outcome.uri}`);
 			}

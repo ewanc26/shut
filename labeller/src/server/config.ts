@@ -7,6 +7,8 @@ export interface Config {
 	port: number;
 	dataDir: string;
 	jetstreamUrl: string | undefined;
+	/** Log what the experimental judge would label. It never writes labels. */
+	shadowJudge: boolean;
 }
 
 export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -20,6 +22,8 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 	const port = Number(env.PORT || 14831);
 	if (!Number.isInteger(port) || port < 1 || port > 65535)
 		throw new Error('PORT must be a port number.');
+	const judge = env.AI_JUDGE?.trim() || 'off';
+	if (judge !== 'off' && judge !== 'shadow') throw new Error('AI_JUDGE must be off or shadow.');
 
 	return {
 		did,
@@ -27,6 +31,7 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 		host: env.HOST || '127.0.0.1',
 		port,
 		dataDir: env.DATA_DIR || fileURLToPath(new URL('../../../data', import.meta.url)),
-		jetstreamUrl: env.JETSTREAM_URL || undefined
+		jetstreamUrl: env.JETSTREAM_URL || undefined,
+		shadowJudge: judge === 'shadow'
 	};
 }

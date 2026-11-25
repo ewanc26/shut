@@ -15,6 +15,12 @@ export interface Change {
 	record?: unknown;
 }
 
+/** A second opinion on records the word list leaves unlabelled. */
+export type Judge = (
+	segments: readonly string[],
+	verdict: Verdict
+) => { matched: boolean; probability: number } | undefined;
+
 export interface LabelStore {
 	/** The label currently in force on a subject, if any. */
 	active(uri: string): Promise<{ cid?: string } | undefined>;
@@ -25,6 +31,8 @@ export interface LabelStore {
 export type Outcome =
 	| { action: 'labelled'; uri: string; verdict: Verdict }
 	| { action: 'negated'; uri: string }
+	/** The judge would have labelled this. Nothing was written. */
+	| { action: 'suggested'; uri: string; probability: number }
 	| undefined;
 
 /**
@@ -34,7 +42,8 @@ export type Outcome =
 export async function reconcile(
 	change: Change,
 	store: LabelStore,
-	exempt?: string
+	exempt?: string,
+	judge?: Judge
 ): Promise<Outcome> {
 	const { did, collection, rkey, operation, cid, record } = change;
 	const extract =
@@ -46,7 +55,8 @@ export async function reconcile(
 	if (!extract || did === exempt) return;
 
 	const uri = `at://${did}/${collection}/${rkey}`;
-	const verdict = operation === 'delete' ? undefined : detect(extract(record));
+	const segments = operation === 'delete' ? [] : extract(record);
+	const verdict = operation === 'delete' ? undefined : detect(segments);
 
 	if (verdict?.matched) {
 		const current = await store.active(uri);
@@ -56,9 +66,28 @@ export async function reconcile(
 	}
 
 	// A brand new record that does not match cannot have a label to withdraw.
-	if (operation === 'create') return;
-	const current = await store.active(uri);
-	if (!current) return;
-	await store.negate(uri, current.cid);
-	return { action: 'negated', uri };
+	if (operation !== 'create') {
+		const current = await store.active(uri);
+		if (current) {
+			await store.negate(uri, current.cid);
+			return { action: 'negated', uri };
+		}
+	}
+	return verdict && judge ? suggest(judge, uri, segments, verdict) : undefined;
+}
+
+/** The judge is advisory, so its failure must never stop the labeller. */
+function suggest(
+	judge: Judge,
+	uri: string,
+	segments: readonly string[],
+	verdict: Verdict
+): Outcome {
+	try {
+		const opinion = judge(segments, verdict);
+		if (opinion?.matched) return { action: 'suggested', uri, probability: opinion.probability };
+	} catch (error) {
+		console.warn('The judge failed:', error);
+	}
+	return;
 }
