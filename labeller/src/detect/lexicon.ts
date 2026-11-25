@@ -29,7 +29,8 @@ export const STRONG: readonly Rule[] = [
 	// The movement's own name, including mentions of it.
 	{
 		id: 'incel',
-		pattern: 'incel(?:s|dom|ish|ism|ibacy)?|involuntary celiba(?:te|tes|cy)|инцел\\p{L}*'
+		pattern:
+			'incel(?:s|dom|ish|ism|ibacy)?|involuntary celiba(?:te|tes|cy)|инцел\\p{L}*|incel(?:tears|osphere)|deincel(?:ification|ified)'
 	},
 	{ id: 'moid', pattern: 'moids?' },
 	{ id: 'khhv', pattern: 'khhv|kissless[ ,-]+(?:(?:hugless|handhold ?less)[ ,-]+){1,2}virgins?' },
@@ -43,7 +44,7 @@ export const STRONG: readonly Rule[] = [
 	{
 		id: 'cel',
 		pattern:
-			'(?:fem|curry|rice|black|white|ethnic|height|short|manlet|wrist|skull|frame|gym|true|mental|vol|fake|near|escort|rich|poor|old|young|ugly|brain|looks|jbw|mewing|cope|bald|autist|aspie|sperg|tall|chad|face|jaw|nose|arab|indian|latino|noodle|dental|giga|ultra|hope|doom|ascend|incel[ -]?)cels?|(?:femcel|truecel|volcel)(?:dom|ibacy|ism)'
+			'(?:fem|curry|rice|black|white|ethnic|height|short|manlet|wrist|skull|frame|gym|true|mental|vol|fake|near|escort|rich|poor|old|young|ugly|brain|looks|jbw|mewing|cope|ginger|virgin|auti|bird|forced|wage|ethni|nig|nigga|bald|autist|aspie|sperg|tall|chad|face|jaw|nose|arab|indian|latino|noodle|dental|giga|ultra|hope|doom|ascend|incel[ -]?)cels?|(?:femcel|truecel|volcel)(?:dom|ibacy|ism)'
 	},
 	{ id: 'cucktears', pattern: 'cuck[ -]?tears' },
 
@@ -63,22 +64,26 @@ export const STRONG: readonly Rule[] = [
 	{
 		id: 'maxx',
 		pattern:
-			'(?:gym|jaw|height|money|status|surgery|rice|white|curry|jbw|nt|hard|soft|mew|rope|ascend|frame)[ -]?maxx(?:ed|er|ers|ing)?'
+			'(?:gym|jaw|height|money|status|surgery|rice|white|curry|jbw|nt|hard|soft|mew|rope|ascend|frame|hag|low[ -]?inhib)[ -]?maxx(?:ed|er|ers|ing)?'
 	},
 	{
 		id: 'mog',
-		pattern: '(?:height|frame|jaw|face|looks)[ -]?mog(?:s|ged|ger|gers|ging)?|mogg(?:ed|er|ers|ing)'
+		pattern:
+			'(?:height|frame|jaw|face|looks|wrist|skull)[ -]?mog(?:s|ged|ger|gers|ging)?|mogg(?:ed|er|ers|ing)'
 	},
-	{ id: 'chadlite', pattern: '(?:chad|stacy|becky)[ -]?lites?|chad[ -]?fish(?:ed|ing)?' },
-	{ id: 'bonesmash', pattern: 'bonesmash(?:ed|er|ing)' },
+	{ id: 'chadlite', pattern: '(?:chad|stacy|becky)[ -]?lites?|chad[ -]?fish(?:ed|ing)?|chadlets?' },
+	{ id: 'bonesmash', pattern: 'bonesmash(?:ed|er|ing)|bone[ -]?smash(?:ing)? theory' },
 	{ id: 'manlet', pattern: 'manlets?' },
 
 	// Forum shorthand and fatalism.
-	{ id: 'awalt', pattern: 'awalt' },
-	{ id: 'fuel', pattern: '(?:rope|sui|cope|cage)[ -]?fuel' },
+	{ id: 'awalt', pattern: 'n?awalt' },
+	{ id: 'fuel', pattern: '(?:rope|sui|suicide|cope|cage)[ -]?fuel' },
 	{ id: 'rope', pattern: 'cope[ -]?or[ -]?rope|rope[ -]?or[ -]?cope' },
 	{ id: 'jbwtheory', pattern: 'just be white theory' },
-	{ id: 'carousel', pattern: 'cock carousel|alpha fu(?:x|cks),? beta bu(?:x|cks)|beta bux+' },
+	{
+		id: 'carousel',
+		pattern: 'cock carousel|alpha fu(?:x|cks),? beta bu(?:x|cks)|beta[ -]?bux+(?:ing)?'
+	},
 
 	// Glorification of mass violence.
 	{ id: 'uprising', pattern: '(?:beta|incel) (?:uprising|rebellion)' },
@@ -94,7 +99,7 @@ export const STRONG: readonly Rule[] = [
  * two different groups, so several words from one group never add up.
  */
 export const WEAK: Readonly<Record<string, string>> = {
-	archetype: '(?:giga[ -]?)?chads?|stacys?|stacies|beckys?|beckies|tyrones?',
+	archetype: '(?:giga[ -]?)?chads?|chadpreets?|stacys?|stacies|beckys?|beckies|tyrones?',
 	roastie: 'roasties?',
 	pill: '(?:red|blue|black|purple)[ -]pills?|(?:red|blue)[ -]?pill(?:ed|er|ers|ing)?',
 	cope: 'cop(?:e|es|ing harder)',
@@ -103,6 +108,8 @@ export const WEAK: Readonly<Record<string, string>> = {
 	face: 'canthal tilt|hunter eyes|mewing',
 	market: 'sexual market ?(?:value|place)|smv|hypergam(?:y|ous)',
 	hierarchy: '(?:alpha|beta|sigma) males?|soy[ -]?boys?|normies?|normalfags?',
-	forum: 'jfl|over for (?:you|me|us)(?:cels)?|never began|life[ -]?fuel',
-	rodger: 'elliot rodger|going er|oneitis'
+	forum: 'jfl|over for (?:you|me|us)(?:cels)?|never began|life[ -]?fuel|rage[ -]?fuel',
+	rodger: 'elliot rodger|going er|oneitis',
+	manosphere:
+		'mgtow|amogg(?:ed|ing)|monkey[ -]?branch(?:es|ed|ing)?|beta providers?|wage[ -]?cucks?'
 };

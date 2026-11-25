@@ -40,5 +40,6 @@ export const WEAK_REASONS: Readonly<Record<string, string>> = {
 	market: 'Dating-market jargon',
 	hierarchy: 'Social-rank labels',
 	forum: 'General forum shorthand',
-	rodger: 'References that are often innocent'
+	rodger: 'References that are often innocent',
+	manosphere: 'Wider “manosphere” slang'
 };
