@@ -92,7 +92,7 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
 
 ## Experimental judge
 
-A free [OpenCode](https://opencode.ai/docs/zen/) model can give a second opinion on posts and profiles the word list leaves unlabelled because they hit only one ambiguous group. **It cannot write labels.** It is off by default, needs no API key, and runs OpenCode inside the labeller through [`@opencode/sdk`](https://opencode.ai/docs/build/sdk/). To try it, set this in `.env`:
+A free [OpenCode](https://opencode.ai/docs/zen/) model can give a second opinion on posts and profiles the word list leaves unlabelled because they hit only one ambiguous group. **It cannot write labels.** It is off by default, uses no API key (whether answers arrive without signing in is untested), and runs OpenCode inside the labeller through [`@opencode/sdk`](https://opencode.ai/docs/build/sdk/). To try it, set this in `.env`:
 
 ```sh
 AI_JUDGE=shadow
