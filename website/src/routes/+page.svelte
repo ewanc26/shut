@@ -89,20 +89,32 @@
 				</p>
 				<dl class="mt-8">
 					<div class="border-t-2 border-paint py-5">
-						<dt><h3>One distinctive term is enough</h3></dt>
+						<dt
+							class="font-(family-name:--font-sign) text-[1.45rem] leading-tight font-extrabold font-stretch-[80%]"
+						>
+							One distinctive term is enough
+						</dt>
 						<dd class="mt-2">
 							The movement’s name, dehumanising names for women and men, “-cel” identities, black
 							pill and appearance-ranking vocabulary, and praise for incel attacks.
 						</dd>
 					</div>
 					<div class="border-t-2 border-paint py-5">
-						<dt><h3>Ambiguous words need company</h3></dt>
+						<dt
+							class="font-(family-name:--font-sign) text-[1.45rem] leading-tight font-extrabold font-stretch-[80%]"
+						>
+							Ambiguous words need company
+						</dt>
 						<dd class="mt-2">
 							Words with everyday meanings only count when {WEAK_THRESHOLD} different kinds appear together.
 						</dd>
 					</div>
 					<div class="border-y-2 border-paint py-5">
-						<dt><h3>A post label stays on that post</h3></dt>
+						<dt
+							class="font-(family-name:--font-sign) text-[1.45rem] leading-tight font-extrabold font-stretch-[80%]"
+						>
+							A post label stays on that post
+						</dt>
 						<dd class="mt-2">
 							A label on a profile covers the profile. Neither one hides everything an account says.
 							Edit the language out and the label is withdrawn.
