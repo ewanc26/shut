@@ -18,9 +18,15 @@ export const HOMONYMS: readonly { remove: RegExp; when?: RegExp }[] = [
 			/\bfoid[ -](?:card|holder|licen[cs]e|number|act|application|law|requirement|revocation)s?\b/gi
 	},
 	// MOID is also an asteroid's minimum orbit intersection distance.
-	{ remove: /\bMOIDs?\b/g, when: /\b(?:asteroids?|orbit(?:s|al)?|comets?|near[- ]earth)\b/i },
-	// And VMware's managed object ID.
-	{ remove: /\bmoids?\b/gi, when: /\b(?:vmware|vsphere|vcenter|esxi|broadcom|managed object)\b/i },
+	{
+		remove: /(?<![\p{L}\p{N}])MOIDs?(?![\p{L}\p{N}])/gu,
+		when: /\b(?:asteroids?|orbit(?:s|al)?|comets?|near[- ]earth)\b/i
+	},
+	// And VMware's managed object ID, which also appears in names such as host_moid.
+	{
+		remove: /(?<![\p{L}\p{N}])moids?(?![\p{L}\p{N}])/giu,
+		when: /\b(?:vmware|vsphere|vcenter|esxi|broadcom|managed object)\b/i
+	},
 	{ remove: /\bFOID\b/g, when: /\b(?:firearms?|guns?|illinois|state police|concealed carry)\b/i }
 ];
 
@@ -44,7 +50,7 @@ export const STRONG: readonly Rule[] = [
 	{
 		id: 'cel',
 		pattern:
-			'(?:fem|curry|rice|black|white|ethnic|height|short|manlet|wrist|skull|frame|gym|true|mental|vol|fake|near|escort|rich|poor|old|young|ugly|brain|looks|jbw|mewing|cope|ginger|virgin|auti|bird|forced|wage|ethni|nig|nigga|bald|autist|aspie|sperg|tall|chad|face|jaw|nose|arab|indian|latino|noodle|dental|giga|ultra|hope|doom|ascend|incel[ -]?)cels?|(?:femcel|truecel|volcel)(?:dom|ibacy|ism)'
+			'(?:fem|curry|rice|black|white|ethnic|height|short|manlet|wrist|skull|frame|gym|true|mental|vol|fake|near|escort|rich|poor|old|young|ugly|brain|looks|jbw|mewing|cope|ginger|virgin|auti|bird|forced|wage|ethni|nig|nigga|bald|autist|aspie|sperg|tall|chad|face|jaw|nose|arab|indian|latino|noodle|dental|giga|ultra|hope|doom|ascend|gr[ae]y|tik[ -]?tok|burger|slave|voice|inhib(?:ition)?|incel[ -]?)cels?|(?:femcel|truecel|volcel)(?:dom|ibacy|ism)'
 	},
 	{ id: 'cucktears', pattern: 'cuck[ -]?tears' },
 
@@ -64,16 +70,18 @@ export const STRONG: readonly Rule[] = [
 	{
 		id: 'maxx',
 		pattern:
-			'(?:gym|jaw|height|money|status|surgery|rice|white|curry|jbw|nt|hard|soft|mew|rope|ascend|frame|hag|low[ -]?inhib)[ -]?maxx(?:ed|er|ers|ing)?'
+			'(?:gym|jaw|height|money|status|surgery|rice|white|curry|jbw|nt|hard|soft|mew|rope|ascend|frame|hag|jester|low[ -]?inhib)[ -]?maxx(?:ed|er|ers|ing)?'
 	},
 	{
 		id: 'mog',
 		pattern:
-			'(?:height|frame|jaw|face|looks|wrist|skull)[ -]?mog(?:s|ged|ger|gers|ging)?|mogg(?:ed|er|ers|ing)'
+			'(?:height|frame|jaw|face|looks|wrist|skull)[ -]?mog(?:s|ged|ger|gers|ging)?|' +
+			// Not bare "hair mog": Mog is also a well-known cat.
+			'hair[ -]?mog(?:ged|ger|gers|ging)|mogg(?:ed|er|ers|ing)'
 	},
 	{ id: 'chadlite', pattern: '(?:chad|stacy|becky)[ -]?lites?|chad[ -]?fish(?:ed|ing)?|chadlets?' },
 	{ id: 'bonesmash', pattern: 'bonesmash(?:ed|er|ing)|bone[ -]?smash(?:ing)? theory' },
-	{ id: 'manlet', pattern: 'manlets?' },
+	{ id: 'manlet', pattern: '(?:man|lank)lets?' },
 
 	// Forum shorthand and fatalism.
 	{ id: 'awalt', pattern: 'n?awalt' },
@@ -109,9 +117,10 @@ export const WEAK: Readonly<Record<string, string>> = {
 	rank: 'sub[ -]?[58]|psl (?:scale|rating)|[1-9]/10 (?:male|female)|mog(?:s)?|looks[ -]?match(?:ed)?',
 	face: 'canthal tilt|hunter eyes|mewing',
 	market: 'sexual market ?(?:value|place)|smv|hypergam(?:y|ous)',
-	hierarchy: '(?:alpha|beta|sigma) males?|soy[ -]?boys?|normies?|normalfags?',
+	hierarchy: '(?:alpha|beta|sigma|omega|gamma) males?|soy[ -]?boys?|normies?|normalfags?',
 	forum: 'jfl|over for (?:you|me|us)(?:cels)?|never began|life[ -]?fuel|rage[ -]?fuel',
 	rodger: 'elliot rodger|going er|oneitis',
 	manosphere:
-		'mgtow|amogg(?:ed|ing)|monkey[ -]?branch(?:es|ed|ing)?|beta providers?|wage[ -]?cucks?'
+		'mgtow|amogg(?:ed|ing)|monkey[ -]?branch(?:es|ed|ing)?|beta providers?|wage[ -]?cucks?|' +
+		'beta[ -]?cucks?|high[ -]value (?:man|men|male|males)'
 };
