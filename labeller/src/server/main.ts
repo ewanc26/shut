@@ -66,6 +66,7 @@ jetstream.on('commit', (event) => {
 		if (failed) return;
 		try {
 			const { commit } = event;
+			const uri = `at://${event.did}/${commit.collection}/${commit.rkey}`;
 			const outcome = await reconcile(
 				{
 					did: event.did,
@@ -77,6 +78,8 @@ jetstream.on('commit', (event) => {
 				store,
 				config.did
 			);
+			// A record that was deleted or no longer needs an opinion must not be sent later.
+			if (outcome?.action !== 'ambiguous') judge?.forget(uri);
 			if (outcome?.action === 'labelled') {
 				const { strong, weak } = outcome.verdict;
 				console.log(`labelled ${outcome.uri} [${[...strong, ...weak].join(', ')}]`);
