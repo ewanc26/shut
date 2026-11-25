@@ -16,9 +16,11 @@
 		"declare": "tsx --env-file-if-exists=../.env src/cli/declare.ts",
 		"setup-account": "labeler setup",
 		"check": "tsc --noEmit",
-		"test": "vitest run"
+		"test": "vitest run",
+		"activate": "tsx --env-file-if-exists=../.env src/cli/activate.ts"
 	},
 	"dependencies": {
+		"@atproto/crypto": "^0.5.8",
 		"@skyware/jetstream": "^0.2.5",
 		"@skyware/labeler": "^0.2.0",
 		"tsx": "^4.23.15"

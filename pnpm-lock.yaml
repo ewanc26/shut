@@ -182,6 +182,9 @@ importers:
 
   labeller:
     dependencies:
+      '@atproto/crypto':
+        specifier: ^0.5.8
+        version: 0.5.8
       '@skyware/jetstream':
         specifier: ^0.2.5
         version: 0.2.5
@@ -294,6 +297,10 @@ packages:
 
   '@atcute/varint@1.0.4':
     resolution: {integrity: sha512-0nGBaRyJLoxVvCHTSLGwPZKs64PPi/0lDA4viF3I5zxsRmVPsXaE92J8VQj3KoZfk0+Z+liXklG1Onw7G9S4oQ==}
+
+  '@atproto/crypto@0.5.8':
+    resolution: {integrity: sha512-OZseCSPwiRlfEMZIIKPzukTkNbnweG2kSNvhUJxisvWOYJHGKjQDtLIbETdNXiB77jITxe1CZdVRaZaydxMS9A==}
+    engines: {node: '>=22'}
 
   '@emnapi/core@2.0.0-beta.2':
     resolution: {integrity: sha512-MzCVoWtcg4Pm2B3je5mMvYMvj3MmBKw+fU7vbsJc9/iT8ip6/eYIHo/Dsm/mr+wsHB6SEyJDuxB09Yy6r/8+4A==}
@@ -1619,6 +1626,12 @@ snapshots:
       unicode-segmenter: 0.17.3
 
   '@atcute/varint@1.0.4': {}
+
+  '@atproto/crypto@0.5.8':
+    dependencies:
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+      uint8arrays: 5.1.1
 
   '@emnapi/core@2.0.0-beta.2':
     dependencies:
