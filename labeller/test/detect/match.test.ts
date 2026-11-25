@@ -62,6 +62,8 @@ const labelled = [
 	'mgtow forums are full of ragefuel',
 	'chadpreet and the beta provider',
 	// Evasion.
+	'#Foid_Logic',
+	'f_o_i_d',
 	'f0id',
 	'f.o.i.d',
 	'what a f o i d',
@@ -110,6 +112,8 @@ const ignored = [
 	'maximum looks, minimum effort',
 	'fibermaxxing and sleepmaxxing',
 	'avoid the void',
+	'(@mog_example) normies',
+	'@chad_example says cope',
 	'the psl scale of @mog_example',
 	'a ginger cat and a virgin olive oil',
 	'an original animation cel of a bird',
