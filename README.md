@@ -92,21 +92,24 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
 
 ## Experimental judge
 
-Claude Haiku 5.5 can give a second opinion on posts and profiles the word list leaves unlabelled because they hit only one ambiguous group. **It cannot write labels.** It is off by default. To try it, set these in `.env`:
+A free [OpenCode](https://opencode.ai/docs/zen/) model can give a second opinion on posts and profiles the word list leaves unlabelled because they hit only one ambiguous group. **It cannot write labels.** It is off by default, needs no API key, and runs OpenCode inside the labeller through [`@opencode/sdk`](https://opencode.ai/docs/build/sdk/). To try it, set this in `.env`:
 
 ```sh
 AI_JUDGE=shadow
-ANTHROPIC_API_KEY=your-key
 ```
 
-The labeller then logs the address of each record it would have labelled, and running totals every 100 calls.
+The labeller then logs the address of each record it would have labelled, and running totals every 25 calls. It asks for one plain reply, with no session, agent or tools.
 
-- **Text leaves your server.** The whole text of each such record, including alt text and link card text, is sent to Anthropic. The author's DID and the record's address are not added to it.
-- **It costs money.** A rough, unmeasured estimate is a few US dollars a month. `AI_JUDGE_DAILY_LIMIT` (default 2000) caps calls per UTC day, counted afresh after a restart.
-- **It never holds up labelling.** At most four calls run at once, each gives up after 15 seconds with one retry, and anything over the limits is skipped.
-- **Its accuracy is unknown.** `pnpm evaluate` runs 16 invented sentences through the model and prints where it disagrees and the tokens used. It calls the API, so it costs a little. A good score there says little about real posts.
+Read these before turning it on:
 
-If you run a public instance with it on, update the privacy note on the website first.
+- **The free allowance is small.** Its size is not published. On the one machine tried, the first request was refused with "Free usage limit reached" and a wait of over three hours. On a rate limit the judge stops until the time given, and skips what arrives meanwhile. Ambiguous records numbered about 1,600 a day before bare names stopped counting, far beyond `AI_JUDGE_DAILY_LIMIT` (default 200).
+- **Check the terms.** [OpenCode's terms](https://opencode.ai/legal/terms-of-service) limit use to your own internal use, not on behalf of third parties, and restrict programmatic extraction of output. Whether a public labeller fits is for its operator to decide. Free models are offered for a limited time.
+- **Text leaves your server.** The whole text of each such record, including alt text and link card text, goes to OpenCode and the model's provider. The author's DID and the record's address are not added to it.
+- **Only two models are allowed.** `AI_JUDGE_MODEL` accepts `deepseek-v4.1-flash-free` (default) or `hy4-flash-free`, which OpenCode documents as zero retention and no training. Some other free models keep inputs or train on them.
+- **It is heavy.** In a local build the Docker image grew from 625 MB to 1.24 GB, and a labeller with the judge on used about 525 MB of memory against 70 MB without. Its text generation call is marked experimental.
+- **Its accuracy is unknown.** No request has been answered yet. `pnpm evaluate` runs 16 invented sentences through a model and prints where it disagrees. A good score there says little about real posts.
+
+It never holds up labelling: one call runs at a time, gives up after 30 seconds, and anything over the limits is skipped. OpenCode keeps its files in `data/opencode/`, apart from any OpenCode setup on the machine. If you run a public instance with it on, update the privacy note on the website first.
 
 ## Website
 

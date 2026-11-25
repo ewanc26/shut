@@ -4,7 +4,7 @@ import type { Answer } from '../../src/judge/model.js';
 import { CONCURRENCY, shadowJudge, type Ask } from '../../src/judge/shadow.js';
 import { readConfig } from '../../src/server/config.js';
 
-const answer = (sense: Answer['sense']): Answer => ({ sense, inputTokens: 10, outputTokens: 2 });
+const answer = (sense: Answer['sense']): Answer => ({ sense });
 
 function judge(ask: Ask, dailyLimit = 100, now?: () => Date) {
 	const lines: string[] = [];
@@ -23,19 +23,20 @@ describe('shadowJudge', () => {
 			answer(text === 'secret words' ? 'incel' : 'ordinary')
 		);
 		shadow.offer('at://one', ['secret words']);
+		await shadow.idle();
 		shadow.offer('at://two', ['other words']);
 		await shadow.idle();
 		assert.deepEqual(lines, ['judge would label at://one']);
-		assert.equal(shadow.total().inputTokens, 20);
+		assert.equal(shadow.total().ordinary, 1);
 	});
 
 	it('swallows failures without logging their message', async () => {
 		const { shadow, lines } = judge(async () => {
-			throw Object.assign(new Error('echoes secret words'), { status: 429 });
+			throw Object.assign(new Error('echoes secret words'), { status: 500 });
 		});
 		shadow.offer('at://one', ['secret words']);
 		await shadow.idle();
-		assert.deepEqual(lines, ['judge failed: Error 429']);
+		assert.deepEqual(lines, ['judge failed: Error 500']);
 	});
 
 	it('skips rather than queues when too many calls are in flight', () => {
@@ -47,6 +48,30 @@ describe('shadowJudge', () => {
 		for (let i = 0; i <= CONCURRENCY; i++) shadow.offer(`at://${i}`, ['x']);
 		assert.equal(asked, CONCURRENCY);
 		assert.equal(shadow.total().skipped, 1);
+	});
+
+	it('waits out a rate limit before asking again', async () => {
+		let date = new Date('2026-01-01T00:00:00Z');
+		let asked = 0;
+		const { shadow, lines } = judge(
+			async () => {
+				asked += 1;
+				throw { reason: 'rate_limit', status: 429, retryAfterMs: 60_000 };
+			},
+			100,
+			() => date
+		);
+		shadow.offer('at://one', ['x']);
+		await shadow.idle();
+		shadow.offer('at://two', ['x']);
+		assert.equal(asked, 1);
+		date = new Date('2026-01-01T00:01:00Z');
+		shadow.offer('at://three', ['x']);
+		await shadow.idle();
+		assert.equal(asked, 2);
+		assert.equal(lines[0], 'judge paused by a rate limit until 2026-01-01T00:01:00.000Z');
+		assert.equal(shadow.total().skipped, 1);
+		assert.equal(shadow.total().failed, 0);
 	});
 
 	it('stops at the daily limit and starts again the next day', async () => {
@@ -86,20 +111,22 @@ describe('shadowJudge', () => {
 
 describe('AI_JUDGE', () => {
 	const env = { LABELER_DID: 'did:plc:test', SIGNING_KEY: 'key' };
-	const on = { ...env, AI_JUDGE: 'shadow', ANTHROPIC_API_KEY: 'test' };
+	const on = { ...env, AI_JUDGE: 'shadow' };
 
-	it('is off by default, even with a key present', () => {
+	it('is off by default', () => {
 		assert.equal(readConfig(env).judge, undefined);
-		assert.equal(readConfig({ ...env, ANTHROPIC_API_KEY: 'test' }).judge, undefined);
 	});
 
-	it('needs a key in shadow mode', () => {
-		assert.deepEqual(readConfig(on).judge, { apiKey: 'test', dailyLimit: 2000 });
-		assert.throws(() => readConfig({ ...env, AI_JUDGE: 'shadow' }), /ANTHROPIC_API_KEY/);
+	it('needs no key in shadow mode', () => {
+		assert.deepEqual(readConfig(on).judge, {
+			model: 'deepseek-v4.1-flash-free',
+			dailyLimit: 200
+		});
 	});
 
-	it('refuses other values and bad limits', () => {
+	it('refuses other values, bad limits and models that keep inputs', () => {
 		assert.throws(() => readConfig({ ...env, AI_JUDGE: 'on' }), /AI_JUDGE/);
 		assert.throws(() => readConfig({ ...on, AI_JUDGE_DAILY_LIMIT: '0' }), /DAILY_LIMIT/);
+		assert.throws(() => readConfig({ ...on, AI_JUDGE_MODEL: 'big-pickle' }), /AI_JUDGE_MODEL/);
 	});
 });

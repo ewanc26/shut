@@ -24,9 +24,11 @@ public instance is `@shut.croft.click`, served from `https://shut-labeller.croft
 - `labeller/src/detect/` judges text. It must stay free of Node-only APIs, because the website
   runs it in the browser.
 - `labeller/src/account/` turns an account into the labeller.
-- `labeller/src/judge/` asks a Claude model about ambiguous records and only logs. Do not let it
-  write labels without being asked. Its examples are invented; never add real posts. `pnpm evaluate`
-  and `AI_JUDGE=shadow` spend money, so do not run them without being asked.
+- `labeller/src/judge/` asks a free OpenCode model about ambiguous records and only logs. Do not
+  let it write labels without being asked, and never give it a session, agent or tools. It may learn
+  from public posts if only pruned word counts are kept, in `data/`; never commit or paste post
+  text, and keep `examples.ts` invented. `pnpm evaluate` and `AI_JUDGE=shadow` send text to
+  OpenCode and use its allowance, so do not run them without being asked.
 - `labeller/src/label/` decides and stores labels.
 - `labeller/src/stream/` tracks the Jetstream position.
 - `labeller/src/server/` runs the service; `labeller/src/cli/` holds one-off commands.

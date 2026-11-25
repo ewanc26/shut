@@ -21,8 +21,8 @@
 		"activate": "tsx --env-file-if-exists=../.env src/cli/activate.ts"
 	},
 	"dependencies": {
-		"@anthropic-ai/sdk": "~1.13.0",
 		"@atproto/crypto": "^0.5.8",
+		"@opencode/sdk": "2.4.1",
 		"@skyware/jetstream": "^0.2.5",
 		"@skyware/labeler": "^0.2.0",
 		"tsx": "^4.23.15"

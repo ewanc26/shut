@@ -2,8 +2,8 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Jetstream } from '@skyware/jetstream';
 import { LabelerServer } from '@skyware/labeler';
-import { judgeClient } from '../judge/client.js';
-import { askModel } from '../judge/model.js';
+import { openHost } from '../judge/host.js';
+import { askModel, type Model } from '../judge/model.js';
 import { shadowJudge } from '../judge/shadow.js';
 import { COLLECTIONS, reconcile } from '../label/reconcile.js';
 import { serverStore } from '../label/store.js';
@@ -25,14 +25,22 @@ const server = new LabelerServer({
 });
 const store = await serverStore(server);
 
-function startJudge({ apiKey, dailyLimit }: { apiKey: string; dailyLimit: number }) {
-	const client = judgeClient(apiKey);
-	return shadowJudge({
-		ask: (segments, signal) => askModel(client, segments, signal),
-		dailyLimit
-	});
+// Started beside the labeller: records arriving before it is ready go unjudged.
+let judge: ReturnType<typeof shadowJudge> | undefined;
+
+async function startJudge({ model, dailyLimit }: { model: Model; dailyLimit: number }) {
+	try {
+		const host = await openHost(join(config.dataDir, 'opencode'), model);
+		judge = shadowJudge({
+			ask: (segments, signal) => askModel(host.generate, segments, signal),
+			dailyLimit
+		});
+		console.log(`Judge ready: ${model}`);
+	} catch (error) {
+		console.warn('The judge is off, OpenCode did not start:', (error as Error).message);
+	}
 }
-const judge = config.judge && startJudge(config.judge);
+if (config.judge) void startJudge(config.judge);
 
 await new Promise<void>((resolve, reject) => {
 	server.start({ host: config.host, port: config.port }, (error, address) => {
