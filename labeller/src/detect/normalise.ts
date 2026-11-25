@@ -46,6 +46,12 @@ const URL_OR_DOMAIN =
 	/\bhttps?:\/\/\S+|\b(?:[a-z0-9-]+\.)+(?:com|net|org|social|app|co|uk|io|dev|me|xyz|gg|tv)\b(?:\/\S*)?/gi;
 const MENTION = /(?<![\p{L}\p{N}])@(?:[a-z0-9-]+\.)+[a-z]{2,}/giu;
 
+/**
+ * Handles from other networks, such as "@some_name". Bluesky handles cannot hold an
+ * underscore, and without this their parts would be read as separate words.
+ */
+const FOREIGN_MENTION = /(?<![\p{L}\p{N}])@[a-z0-9]*_[a-z0-9_]*/giu;
+
 /** Runs of single letters with one consistent separator, such as "f.o.i.d" or "f o i d". */
 const SPACED = /(?<![\p{L}\p{N}])\p{L}([ .\-_*])(?:\p{L}\1)+\p{L}(?![\p{L}\p{N}])/gu;
 
@@ -78,7 +84,10 @@ function unleet(text: string, one: 'i' | 'l'): string {
 
 /** Returns the distinct readings of a piece of text that the lexicon is matched against. */
 export function variants(text: string): string[] {
-	const cleaned = text.replace(MENTION, ' ').replace(URL_OR_DOMAIN, ' ');
+	const cleaned = text
+		.replace(MENTION, ' ')
+		.replace(URL_OR_DOMAIN, ' ')
+		.replace(FOREIGN_MENTION, ' ');
 	const bases = new Set([fold(cleaned), fold(splitHashtags(cleaned))]);
 	const out = new Set<string>();
 
