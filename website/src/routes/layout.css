@@ -1,0 +1,98 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+@import '@fontsource-variable/bricolage-grotesque/standard.css';
+
+@theme {
+	--color-paint: oklch(0.27 0.047 168);
+	--color-paint-deep: oklch(0.22 0.04 168);
+	--color-enamel: oklch(0.95 0.028 90);
+	--color-signal: oklch(0.52 0.19 28);
+	--color-brass: oklch(0.8 0.11 85);
+
+	--font-sign: 'Bricolage Grotesque Variable', 'Arial Narrow', sans-serif;
+	--font-body: 'Atkinson Hyperlegible Next Variable', system-ui, sans-serif;
+}
+
+@layer base {
+	html {
+		background: var(--color-paint);
+		color: var(--color-enamel);
+		font-family: var(--font-body);
+		font-size: 112.5%;
+		line-height: 1.55;
+		color-scheme: dark;
+	}
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-sign);
+		font-stretch: 80%;
+		font-weight: 800;
+		line-height: 1.02;
+		text-wrap: balance;
+	}
+	h1 {
+		font-size: clamp(2.8rem, 8vw, 5.6rem);
+	}
+	h2 {
+		font-size: clamp(2rem, 4.5vw, 3rem);
+	}
+	h3 {
+		font-size: 1.45rem;
+	}
+	a {
+		color: inherit;
+		text-decoration: underline;
+		text-decoration-color: var(--color-brass);
+		text-decoration-thickness: 0.12em;
+		text-underline-offset: 0.2em;
+	}
+	a:hover {
+		text-decoration-thickness: 0.22em;
+	}
+	:focus-visible {
+		outline: 3px solid var(--color-brass);
+		outline-offset: 3px;
+	}
+	/* Cream sections need a darker focus ring and underline. */
+	.notice :focus-visible {
+		outline-color: var(--color-signal);
+	}
+	.notice a {
+		text-decoration-color: var(--color-signal);
+	}
+}
+
+@layer components {
+	.wrap {
+		width: min(100% - 2.5rem, 68rem);
+		margin-inline: auto;
+	}
+	.notice {
+		background: var(--color-enamel);
+		color: var(--color-paint-deep);
+	}
+	/* A heading column beside its content, like a printed shop notice. */
+	.cols {
+		display: grid;
+		gap: 1.5rem 3rem;
+		padding-block: clamp(3rem, 8vw, 6rem);
+	}
+	@media (min-width: 52rem) {
+		.cols {
+			grid-template-columns: 17rem minmax(0, 1fr);
+		}
+	}
+	.skip {
+		position: absolute;
+		left: 1rem;
+		top: -10rem;
+		z-index: 10;
+		background: var(--color-enamel);
+		color: var(--color-paint-deep);
+		padding: 0.5rem 1rem;
+	}
+	.skip:focus {
+		top: 1rem;
+	}
+}

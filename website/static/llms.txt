@@ -1,0 +1,9 @@
+# shut
+
+> A Bluesky labeller that hides incel language from the people who subscribe to it.
+
+shut applies one label, `incel-language`, to posts and profiles that use listed vocabulary.
+It matches words rather than meaning, so it also catches quotes and criticism, and misses
+new or coded phrasing. No public instance is running yet.
+
+- Source and setup: https://github.com/ewanc26/shut
