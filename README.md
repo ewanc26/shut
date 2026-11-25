@@ -151,6 +151,22 @@ pnpm build
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and the checks required before opening a pull request.
 
+## Credits
+
+Dataset credit: the authors of [IYKYK: Using language models to decode extremist cryptolects](https://arxiv.org/abs/2506.05635):
+
+```bibtex
+@misc{dekock2025iykykusinglanguagemodels,
+  title={IYKYK: Using language models to decode extremist cryptolects},
+  author={Christine de Kock and Arij Riabi and Zeerak Talat and Michael Sejr Schlichtkrull and Pranava Madhyastha and Eduard Hovy},
+  year={2025},
+  eprint={2506.05635},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL},
+  url={https://arxiv.org/abs/2506.05635}
+}
+```
+
 ## Licence
 
 MIT
