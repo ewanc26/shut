@@ -24,5 +24,6 @@ The try-it box lets a visitor test the real detector without sending text anywhe
 ## Strategic principles
 
 1. **Never overstate.** If no labeller is running, say so. State the misses and false positives.
-2. **Never display the terms or real posts.** Describe rule categories and link to the source.
+2. **Never display slurs or real posts.** Describe rule categories and link to the source. The one
+   example match uses an ideological term, not a slur.
 3. **Private by default.** No analytics, cookies or third-party requests.

@@ -45,4 +45,4 @@ alone.
 - No gradients or glass effects
 - No centred hero with two buttons
 - No card grids or side-stripe borders
-- No terms from the word list as decoration
+- No slurs anywhere on the page, and no word-list terms as decoration
