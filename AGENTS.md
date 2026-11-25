@@ -4,29 +4,65 @@ Guidance for AI coding agents working in **shut**.
 
 ## Project overview
 
-A Bluesky labeller that applies `incel-language` to posts and profiles.
+A Bluesky labeller that applies `incel-language` to posts and profiles, with a static website. No
+public instance is running; do not write as though one is.
 
-- Language: TypeScript, run with `tsx` on Node.js 22.9 or newer
+- Language: TypeScript; Svelte 5 and SvelteKit 3 for the website
+- Tooling: pnpm workspace, Node.js 22.17 or newer
+- Intended website origin: `https://shut.croft.click`
 - Default branch: main
-- `src/detect/` judges text, `src/label/` decides and stores labels, `src/stream/` tracks the Jetstream position, `src/server/` runs the service, `src/cli/` holds one-off commands
+
+## Read first
+
+1. `README.md` for shipped scope and deployment status.
+2. `package.json` and `pnpm-workspace.yaml` for commands and dependency policy.
+3. `labeller/src/detect/` and its tests before touching matching.
+4. `website/DESIGN.md` and `website/PRODUCT.md` before changing the site.
+
+## Repository map
+
+- `labeller/src/detect/` judges text. It must stay free of Node-only APIs, because the website
+  runs it in the browser.
+- `labeller/src/label/` decides and stores labels.
+- `labeller/src/stream/` tracks the Jetstream position.
+- `labeller/src/server/` runs the service; `labeller/src/cli/` holds one-off commands.
+- `website/src/lib/site/config.ts` holds the origin and the live labeller handle.
+- `website/src/lib/judge/reasons.ts` describes rules so the page never prints the terms.
+- `website/tools/og_cover/` renders the committed social card.
 
 ## Working rules
 
-- Inspect the README, manifests and nearby code before editing.
-- Run `npm test` (type check and tests); never claim checks you did not run.
+- Inspect the README, manifests, CI workflows, and nearby code before editing.
+- Preserve existing architecture, naming, formatting, and error-handling conventions.
+- Use project scripts for validation; never claim checks you did not run.
+- Keep changes scoped and update tests or documentation when behavior changes.
+- Use feature branches and pull requests.
+- Treat generated files, credentials, deployment configuration, and release metadata as sensitive.
 - Word list changes follow `CONTRIBUTING.md`.
 - Treat the signing key, account password, `.env` and `data/` as sensitive.
-- `npm run declare -- --publish`, `npx @skyware/labeler` and starting the server with real credentials change a public account. Do not run them without being asked.
-- `package.json` overrides Fastify to v5 because `@skyware/labeler` 0.2.0 pins a vulnerable v4. Keep the integration tests passing when changing either.
+- `pnpm declare --publish`, `pnpm setup-account` and starting the server with real credentials
+  change a public account. Do not run them without being asked.
+- `pnpm-workspace.yaml` overrides Fastify to v5 because `@skyware/labeler` 0.2.0 pins a vulnerable
+  v4. Keep the integration tests passing when changing either.
+
+## Validation
+
+`pnpm lint`, `pnpm check`, `pnpm test`, `pnpm build`, and `docker build -t shut .` for changes to
+the Dockerfile, dependencies or layout.
 
 ## File naming
 
-Source files are named `<scope>/<atom>.<ext>`. The directory is the scope: the module, feature or layer the code belongs to. The file name is one atom: one concept, named in lowercase words joined by `_`. Pair an interface with its implementation under the same atom name. Avoid catch-all names such as `utils`, `misc`, `common2` or `helpers_final`.
+Source files are named `<scope>/<atom>.<ext>`. The directory is the scope: the module, feature or layer the code belongs to. The file name is one atom: one concept, named in lowercase words joined by `_`. Pair an interface with its implementation under the same atom name. Avoid catch-all names such as `utils`, `misc`, `common2` or `helpers_final`. Framework-reserved names such as `+page.svelte` and `vite.config.ts` keep their required form.
+
+## Recent history
+
+Restructured into a pnpm workspace and added the website.
 
 <!-- allowed-agents -->
+
 ## Allowed agents
 
-Only **Claude** (Anthropic) and **Mistral** (Mistral AI) may be used as coding agents in this repository.
+Only **Claude** (Anthropic) and **Mistral** (Mistral AI) may be used as coding agents in this repository. This rule supersedes any earlier agent-attribution guidance in this file.
 
 - Agent-assisted commits must credit only one of those agents:
   - `Co-Authored-By: Claude <noreply@anthropic.com>`
