@@ -102,14 +102,14 @@ The labeller then logs the address of each record it would have labelled, and ru
 
 Read these before turning it on:
 
-- **The free allowance is small.** Its size is not published. On the one machine tried, the first request was refused with "Free usage limit reached" and a wait of over three hours. On a rate limit the judge stops until the time given, and skips what arrives meanwhile. Ambiguous records numbered about 1,600 a day before bare names stopped counting, far beyond `AI_JUDGE_DAILY_LIMIT` (default 200).
+- **The free allowance is small.** Its size is not published. On the one machine tried, the first request was refused with "Free usage limit reached" and a wait of over three hours. On a rate limit the judge waits until the time given, and queues what arrives meanwhile. Ambiguous records numbered about 1,600 a day before bare names stopped counting, far beyond `AI_JUDGE_DAILY_LIMIT` (default 200).
 - **Check the terms.** [OpenCode's terms](https://opencode.ai/legal/terms-of-service) limit use to your own internal use, not on behalf of third parties, and restrict programmatic extraction of output. Whether a public labeller fits is for its operator to decide. Free models are offered for a limited time.
 - **Text leaves your server.** The whole text of each such record, including alt text and link card text, goes to OpenCode and the model's provider. The author's DID and the record's address are not added to it.
 - **Only two models are allowed.** `AI_JUDGE_MODEL` accepts `deepseek-v4.1-flash-free` (default) or `hy4-flash-free`, which OpenCode documents as zero retention and no training. Some other free models keep inputs or train on them.
 - **It is heavy.** In a local build the Docker image grew from 625 MB to 1.24 GB, and a labeller with the judge on used about 525 MB of memory against 70 MB without. Its text generation call is marked experimental.
 - **Its accuracy is unknown.** No request has been answered yet. `pnpm evaluate` runs 16 invented sentences through a model and prints where it disagrees. A good score there says little about real posts.
 
-It never holds up labelling: one call runs at a time, gives up after 30 seconds, and anything over the limits is skipped. OpenCode keeps its files in `data/opencode/`, apart from any OpenCode setup on the machine. If you run a public instance with it on, update the privacy note on the website first.
+It never holds up labelling: one call runs at a time and gives up after 30 seconds. Records over a rate limit or the daily limit wait in a queue. The queue is held in memory only, so a restart empties it. It keeps up to 5,000 records, dropping the oldest, and gives up on any that have waited a day. A record that is deleted, or edited so it no longer needs an opinion, leaves the queue; deleting a whole account does not remove its records. OpenCode keeps its files in `data/opencode/`, apart from any OpenCode setup on the machine. If you run a public instance with it on, update the privacy note on the website first.
 
 `pnpm learn 10` watches live posts for ten minutes and saves word counts to `data/judge-counts.json`, using the word list's own decisions as labels. It keeps only words seen in at least 20 posts, and no post text. Nothing reads the counts yet.
 

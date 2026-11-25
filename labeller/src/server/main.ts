@@ -2,6 +2,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Jetstream } from '@skyware/jetstream';
 import { LabelerServer } from '@skyware/labeler';
+import { handOff } from '../judge/handoff.js';
 import { openHost } from '../judge/host.js';
 import { askModel, type Model } from '../judge/model.js';
 import { shadowJudge } from '../judge/shadow.js';
@@ -66,6 +67,7 @@ jetstream.on('commit', (event) => {
 		if (failed) return;
 		try {
 			const { commit } = event;
+			const uri = `at://${event.did}/${commit.collection}/${commit.rkey}`;
 			const outcome = await reconcile(
 				{
 					did: event.did,
@@ -77,13 +79,12 @@ jetstream.on('commit', (event) => {
 				store,
 				config.did
 			);
+			// Not awaited: a slow or failing model must not hold up the queue.
+			if (judge) handOff(judge, uri, outcome);
 			if (outcome?.action === 'labelled') {
 				const { strong, weak } = outcome.verdict;
 				console.log(`labelled ${outcome.uri} [${[...strong, ...weak].join(', ')}]`);
-			} else if (outcome?.action === 'ambiguous') {
-				// Not awaited: a slow or failing model must not hold up the queue.
-				judge?.offer(outcome.uri, outcome.segments);
-			} else if (outcome) {
+			} else if (outcome?.action === 'negated') {
 				console.log(`negated ${outcome.uri}`);
 			}
 			processed = event.time_us;
