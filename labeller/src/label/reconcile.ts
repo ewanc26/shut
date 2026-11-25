@@ -27,8 +27,15 @@ export type Outcome =
 	| { action: 'negated'; uri: string }
 	| undefined;
 
-/** Brings the labels on one record in line with its latest content. */
-export async function reconcile(change: Change, store: LabelStore): Promise<Outcome> {
+/**
+ * Brings the labels on one record in line with its latest content. Records belonging to
+ * `exempt`, the labeller's own account, are never judged: it has to name what it labels.
+ */
+export async function reconcile(
+	change: Change,
+	store: LabelStore,
+	exempt?: string
+): Promise<Outcome> {
 	const { did, collection, rkey, operation, cid, record } = change;
 	const extract =
 		collection === POST
@@ -36,7 +43,7 @@ export async function reconcile(change: Change, store: LabelStore): Promise<Outc
 			: collection === PROFILE && rkey === 'self'
 				? profileText
 				: undefined;
-	if (!extract) return;
+	if (!extract || did === exempt) return;
 
 	const uri = `at://${did}/${collection}/${rkey}`;
 	const verdict = operation === 'delete' ? undefined : detect(extract(record));

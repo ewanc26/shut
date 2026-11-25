@@ -54,7 +54,8 @@ jetstream.on('commit', (event) => {
 					operation: commit.operation,
 					...(commit.operation === 'delete' ? {} : { cid: commit.cid, record: commit.record })
 				},
-				store
+				store,
+				config.did
 			);
 			if (outcome?.action === 'labelled') {
 				const { strong, weak } = outcome.verdict;

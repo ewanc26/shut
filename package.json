@@ -25,7 +25,8 @@
 		"judge": "pnpm --filter shut-labeller judge",
 		"sample": "pnpm --filter shut-labeller sample",
 		"declare": "pnpm --filter shut-labeller declare",
-		"setup-account": "pnpm --filter shut-labeller setup-account"
+		"setup-account": "pnpm --filter shut-labeller setup-account",
+		"activate": "pnpm --filter shut-labeller activate"
 	},
 	"devDependencies": {
 		"prettier": "^3.10.1",

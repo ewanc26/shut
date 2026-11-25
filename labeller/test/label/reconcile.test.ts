@@ -93,6 +93,11 @@ describe('reconcile', () => {
 		);
 	});
 
+	it('never labels the labeller account itself', async () => {
+		const own = change('create', 'a labeller for incel language', 'c', 'own');
+		assert.equal(await reconcile(own, store, own.did), undefined);
+	});
+
 	it('ignores other collections', async () => {
 		assert.equal(
 			await reconcile(

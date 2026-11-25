@@ -11,4 +11,4 @@ export const REPO_URL = 'https://github.com/ewanc26/shut';
  * Handle of the live labeller account, without the "@". Leave null until the
  * labeller is really running: the page then says it is not open yet.
  */
-export const LABELLER_HANDLE: string | null = null;
+export const LABELLER_HANDLE: string | null = 'shut.croft.click';
