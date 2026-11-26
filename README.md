@@ -100,6 +100,17 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
 - To withdraw a wrong label by hand, send a negation as the labeller account through `tools.ozone.moderation.emitEvent`, for example from [Ozone-compatible tooling](https://skyware.js.org/docs/labeler). A later matching edit labels the record again.
 - In-app reports and appeals are not accepted. Put a contact route in the account's bio.
 
+## Backfill
+
+`pnpm backfill` reads Bluesky's post archive through [Jetstream v2](https://bsky.network/docs/jetstream-replay) and queues the posts that would earn `incel-language`. **It labels and publishes nothing**, and there is not yet a tool that publishes the queue. The queue is for the standard label only: backfilled posts are not meant to get `incel-language-strict`.
+
+1. Create a token at <https://bsky.network/account> and set it as `JETSTREAM_API_KEY` in `.env`. Downloads are metered against it.
+2. Try it for a few minutes with `pnpm backfill --minutes 5`. It reports events, posts, matches, bytes downloaded and speed.
+
+The queue is `backfill.db` in the data directory, holding post addresses, versions and account IDs, never text. Deleted posts and accounts, and posts edited so they no longer match, are removed as the archive reports them. Stop it with Ctrl-C and run it again to carry on.
+
+The download is read in memory and not kept. As a safeguard, the scan stops once the queue and `labels.db` together reach 10 GiB; change that with `BACKFILL_MAX_GIB`.
+
 ## Experimental judge
 
 A free [OpenCode](https://opencode.ai/docs/zen/) model can give a second opinion on posts and profiles the word list leaves unlabelled because they hit only one ambiguous group. **It cannot write labels.** It is off by default, uses no API key (whether answers arrive without signing in is untested), and runs OpenCode inside the labeller through [`@opencode/sdk`](https://opencode.ai/docs/build/sdk/). To try it, set this in `.env`:

@@ -19,10 +19,14 @@
 		"check": "tsc --noEmit",
 		"test": "vitest run",
 		"activate": "tsx --env-file-if-exists=../.env src/cli/activate.ts",
-		"learn": "tsx src/cli/learn.ts"
+		"learn": "tsx src/cli/learn.ts",
+		"backfill": "tsx --env-file-if-exists=../.env src/cli/backfill.ts"
 	},
 	"dependencies": {
+		"@atcute/cbor": "1.0.7",
 		"@atproto/crypto": "^0.5.8",
+		"@atproto/lex": "0.3.15",
+		"@bsky/jetstream": "1.0.0",
 		"@opencode/sdk": "2.4.1",
 		"@skyware/jetstream": "^0.2.5",
 		"@skyware/labeler": "^0.2.0",

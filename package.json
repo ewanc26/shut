@@ -26,6 +26,7 @@
 		"evaluate": "pnpm --filter shut-labeller evaluate",
 		"sample": "pnpm --filter shut-labeller sample",
 		"declare": "pnpm --filter shut-labeller declare",
+		"backfill": "pnpm --filter shut-labeller backfill",
 		"setup-account": "pnpm --filter shut-labeller setup-account",
 		"activate": "pnpm --filter shut-labeller activate",
 		"learn": "pnpm --filter shut-labeller learn"
