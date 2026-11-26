@@ -54,6 +54,13 @@
 				were labelled and which rules matched. A separate tool in the source can count words across
 				public posts; it keeps counts, not posts.
 			</p>
+			<p class="mt-3">
+				The public labeller also asks an AI model for a second opinion on some posts and profile
+				edits that hit a single ambiguous term. Their text, including image descriptions and link
+				cards, is sent to <a href="https://opencode.ai/docs/zen/">OpenCode</a> and the model’s provider,
+				without the author’s account ID or the post’s address. OpenCode says the provider keeps none of
+				it and does not train on it. The answer is only logged and never changes a label.
+			</p>
 		</div>
 		<div>
 			<h2 class="mb-3 text-2xl!">About</h2>
