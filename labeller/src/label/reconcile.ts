@@ -1,7 +1,7 @@
 import { detect, type Verdict } from '../detect/match.js';
 import { postText, profileText } from '../detect/record.js';
 import { isCandidate } from '../judge/candidate.js';
-import { LABEL } from './definition.js';
+import { LABEL, LABELS, type Label, STRICT_LABEL } from './definition.js';
 
 export const POST = 'app.bsky.feed.post';
 export const PROFILE = 'app.bsky.actor.profile';
@@ -17,17 +17,28 @@ export interface Change {
 }
 
 export interface LabelStore {
-	/** The label currently in force on a subject, if any. */
-	active(uri: string): Promise<{ cid?: string } | undefined>;
-	apply(uri: string, cid: string | undefined): Promise<void>;
-	negate(uri: string, cid: string | undefined): Promise<void>;
+	/** The given label currently in force on a subject, if any. */
+	active(uri: string, label: Label): Promise<{ cid?: string } | undefined>;
+	apply(uri: string, cid: string | undefined, label: Label): Promise<void>;
+	negate(uri: string, cid: string | undefined, label: Label): Promise<void>;
 }
 
+/** What was written for one record. Undefined when nothing was written and nothing is unsure. */
 export type Outcome =
-	| { action: 'labelled'; uri: string; verdict: Verdict }
-	| { action: 'negated'; uri: string }
-	/** Left unlabelled on one ambiguous group. Nothing was written. */
-	| { action: 'ambiguous'; uri: string; segments: string[] }
+	| {
+			uri: string;
+			/** Undefined for a deletion. */
+			verdict?: Verdict;
+			/** Labels newly applied, or applied again to a new version. */
+			applied: Label[];
+			/** Labels withdrawn. */
+			negated: Label[];
+			/**
+			 * Set when the standard label was left off on one ambiguous group, which is worth a
+			 * second opinion. The strict label may still have been applied.
+			 */
+			ambiguous?: string[];
+	  }
 	| undefined;
 
 /**
@@ -51,22 +62,30 @@ export async function reconcile(
 	const uri = `at://${did}/${collection}/${rkey}`;
 	const segments = operation === 'delete' ? [] : extract(record);
 	const verdict = operation === 'delete' ? undefined : detect(segments);
+	const wanted: Record<Label, boolean> = {
+		[LABEL]: verdict?.matched ?? false,
+		[STRICT_LABEL]: verdict?.strict ?? false
+	};
 
-	if (verdict?.matched) {
-		const current = await store.active(uri);
-		if (current && current.cid === cid) return;
-		await store.apply(uri, cid);
-		return { action: 'labelled', uri, verdict };
-	}
-
-	// A brand new record that does not match cannot have a label to withdraw.
-	if (operation !== 'create') {
-		const current = await store.active(uri);
-		if (current) {
-			await store.negate(uri, current.cid);
-			return { action: 'negated', uri };
+	const applied: Label[] = [];
+	const negated: Label[] = [];
+	for (const label of LABELS) {
+		if (wanted[label]) {
+			const current = await store.active(uri, label);
+			if (current && current.cid === cid) continue;
+			await store.apply(uri, cid, label);
+			applied.push(label);
+		} else if (operation !== 'create') {
+			// A brand new record cannot have a label to withdraw.
+			const current = await store.active(uri, label);
+			if (!current) continue;
+			await store.negate(uri, current.cid, label);
+			negated.push(label);
 		}
 	}
-	if (verdict && isCandidate(verdict)) return { action: 'ambiguous', uri, segments };
-	return;
+
+	// A record whose standard label was just withdrawn is not sent for an opinion.
+	const ambiguous = verdict && isCandidate(verdict) && !negated.includes(LABEL);
+	if (!applied.length && !negated.length && !ambiguous) return;
+	return { uri, verdict, applied, negated, ...(ambiguous ? { ambiguous: segments } : {}) };
 }

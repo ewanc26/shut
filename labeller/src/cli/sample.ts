@@ -15,22 +15,25 @@ const jetstream = new Jetstream({
 });
 let seen = 0;
 let matched = 0;
+let strict = 0;
 
 jetstream.onCreate(POST, ({ commit }) => {
 	seen++;
 	const segments = postText(commit.record);
-	const { matched: hit, strong, weak } = detect(segments);
-	if (!hit) return;
-	matched++;
+	const verdict = detect(segments);
+	const { strong, weak } = verdict;
+	if (!verdict.strict) return;
+	strict++;
+	if (verdict.matched) matched++;
 	console.log(
-		`[${[...strong, ...weak].join(', ')}] ${JSON.stringify(segments.join(' | ').slice(0, 300))}`
+		`${verdict.matched ? '' : '(strict only) '}[${[...strong, ...weak].join(', ')}] ${JSON.stringify(segments.join(' | ').slice(0, 300))}`
 	);
 });
 jetstream.on('error', (error) => console.error('Jetstream error:', error?.message ?? error));
 jetstream.start();
 
 setTimeout(() => {
-	console.log(`\n${matched} of ${seen} posts would be labelled.`);
+	console.log(`\n${matched} of ${seen} posts would be labelled, ${strict} with the strict label.`);
 	jetstream.close();
 	process.exit(0);
 }, seconds * 1000);

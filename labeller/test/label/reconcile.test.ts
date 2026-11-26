@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import { afterAll, beforeAll, describe, it } from 'vitest';
 import { LabelerServer } from '@skyware/labeler';
 import { type Change, type LabelStore, POST, reconcile } from '../../src/label/reconcile.js';
+import { LABEL, STRICT_LABEL } from '../../src/label/definition.js';
 import { serverStore } from '../../src/label/store.js';
 import { loadCursor, saveCursor } from '../../src/stream/cursor.js';
 
@@ -50,7 +51,9 @@ const change = (
 	...(text === undefined ? {} : { record: { text } })
 });
 
-async function labels(): Promise<{ neg?: boolean; cid?: string; sig?: unknown }[]> {
+const uri = (rkey: string) => `at://did:plc:author/${POST}/${rkey}`;
+
+async function labels(): Promise<{ val: string; neg?: boolean; cid?: string; sig?: unknown }[]> {
 	const response = await fetch(`http://${base}/xrpc/com.atproto.label.queryLabels?uriPatterns=*`);
 	assert.equal(response.status, 200);
 	return ((await response.json()) as { labels: [] }).labels;
@@ -62,30 +65,41 @@ describe('reconcile', () => {
 		assert.equal((await labels()).length, 0);
 	});
 
-	it('labels a matching post once, even when the event is replayed', async () => {
-		assert.equal((await reconcile(change('create', 'foid', 'cid1'), store))?.action, 'labelled');
+	it('applies both labels to a matching post once, even when the event is replayed', async () => {
+		const outcome = await reconcile(change('create', 'foid', 'cid1'), store);
+		assert.deepEqual(outcome?.applied, [LABEL, STRICT_LABEL]);
 		assert.equal(await reconcile(change('create', 'foid', 'cid1'), store), undefined);
 		const all = await labels();
-		assert.equal(all.length, 1);
-		assert.equal(all[0]?.cid, 'cid1');
-		assert.ok(all[0]?.sig);
+		assert.deepEqual(all.map(({ val }) => val).sort(), [LABEL, STRICT_LABEL]);
+		assert.ok(all.every(({ cid, sig }) => cid === 'cid1' && sig));
 	});
 
 	it('labels the new version after an edit that still matches', async () => {
-		assert.equal((await reconcile(change('update', 'foids', 'cid2'), store))?.action, 'labelled');
+		const outcome = await reconcile(change('update', 'foids', 'cid2'), store);
+		assert.deepEqual(outcome?.applied, [LABEL, STRICT_LABEL]);
 	});
 
-	it('withdraws the label once an edit removes the language', async () => {
-		assert.equal((await reconcile(change('update', 'sorry', 'cid3'), store))?.action, 'negated');
+	it('keeps only the strict label after an edit down to one ambiguous term', async () => {
+		const outcome = await reconcile(change('update', 'pure cope', 'cid3'), store);
+		assert.deepEqual(outcome?.applied, [STRICT_LABEL]);
+		assert.deepEqual(outcome?.negated, [LABEL]);
+		assert.equal(outcome?.ambiguous, undefined);
+		assert.equal(await store.active(uri('abc'), LABEL), undefined);
+		assert.deepEqual(await store.active(uri('abc'), STRICT_LABEL), { cid: 'cid3' });
+	});
+
+	it('withdraws the strict label once an edit removes the language', async () => {
+		const outcome = await reconcile(change('update', 'sorry', 'cid4'), store);
+		assert.deepEqual(outcome?.negated, [STRICT_LABEL]);
 		assert.equal((await labels()).at(-1)?.neg, true);
-		assert.equal(await reconcile(change('update', 'sorry again', 'cid4'), store), undefined);
+		assert.equal(await reconcile(change('update', 'sorry again', 'cid5'), store), undefined);
 	});
 
-	it('withdraws the label when a labelled post is deleted', async () => {
+	it('withdraws both labels when a labelled post is deleted', async () => {
 		await reconcile(change('create', 'foid', 'cid1', 'gone'), store);
-		assert.equal(
-			(await reconcile(change('delete', undefined, undefined, 'gone'), store))?.action,
-			'negated'
+		assert.deepEqual(
+			(await reconcile(change('delete', undefined, undefined, 'gone'), store))?.negated,
+			[LABEL, STRICT_LABEL]
 		);
 		assert.equal(
 			await reconcile(change('delete', undefined, undefined, 'never'), store),
@@ -98,11 +112,16 @@ describe('reconcile', () => {
 		assert.equal(await reconcile(own, store, own.did), undefined);
 	});
 
-	it('reports an ambiguous record without writing anything', async () => {
+	it('gives an ambiguous record only the strict label, and reports it', async () => {
 		const before = (await labels()).length;
 		const outcome = await reconcile(change('create', 'pure cope', 'c', 'unsure'), store);
-		assert.equal(outcome?.action, 'ambiguous');
-		assert.equal((await labels()).length, before);
+		assert.deepEqual(outcome?.ambiguous, ['pure cope']);
+		assert.deepEqual(outcome?.applied, [STRICT_LABEL]);
+		const added = (await labels()).slice(before);
+		assert.deepEqual(
+			added.map(({ val }) => val),
+			[STRICT_LABEL]
+		);
 	});
 
 	it('ignores other collections', async () => {

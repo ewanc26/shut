@@ -9,6 +9,6 @@ type Judge = Pick<ReturnType<typeof shadowJudge>, 'offer' | 'forget'>;
  * was deleted or settled is never sent later.
  */
 export function handOff(judge: Judge, uri: string, outcome: Outcome): void {
-	if (outcome?.action === 'ambiguous') judge.offer(uri, outcome.segments);
+	if (outcome?.ambiguous) judge.offer(uri, outcome.ambiguous);
 	else judge.forget(uri);
 }
