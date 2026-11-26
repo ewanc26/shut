@@ -79,7 +79,7 @@ describe('profileLookup', () => {
 
 	it('backs off after a failure, and tries the account again when it next posts', async () => {
 		const { lookup, state, done, delivered, requests } = setup();
-		state.status = 429;
+		state.status = 500;
 		lookup.want('did:a');
 		await lookup.run();
 		assert.equal(done.size, 0);
@@ -90,6 +90,19 @@ describe('profileLookup', () => {
 		assert.equal(requests.length, 1);
 		state.time = BACKOFF_MS;
 		await lookup.run();
+		assert.equal(delivered.length, 1);
+	});
+
+	it('keeps a batch refused with a 429 for the next turn, without backing off', async () => {
+		const { lookup, state, delivered, requests } = setup();
+		state.status = 429;
+		lookup.want('did:a');
+		await lookup.run();
+		assert.equal(lookup.size(), 1);
+		assert.equal(delivered.length, 0);
+		state.status = 200;
+		await lookup.run();
+		assert.equal(requests.length, 2);
 		assert.equal(delivered.length, 1);
 	});
 
