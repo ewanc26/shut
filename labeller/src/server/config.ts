@@ -8,6 +8,8 @@ export interface Config {
 	port: number;
 	dataDir: string;
 	jetstreamUrl: string | undefined;
+	/** Whether to fetch and judge the existing profile of each account seen posting. */
+	profileCheck: boolean;
 	/** Set to log what the experimental judge would label. It never writes labels. */
 	judge: { model: Model; dailyLimit: number } | undefined;
 }
@@ -23,6 +25,9 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 	const port = Number(env.PORT || 14831);
 	if (!Number.isInteger(port) || port < 1 || port > 65535)
 		throw new Error('PORT must be a port number.');
+	const profileCheck = env.PROFILE_CHECK?.trim() || 'on';
+	if (profileCheck !== 'on' && profileCheck !== 'off')
+		throw new Error('PROFILE_CHECK must be on or off.');
 	const judge = env.AI_JUDGE?.trim() || 'off';
 	if (judge !== 'off' && judge !== 'shadow') throw new Error('AI_JUDGE must be off or shadow.');
 	const dailyLimit = Number(env.AI_JUDGE_DAILY_LIMIT?.trim() || 200);
@@ -39,6 +44,7 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 		port,
 		dataDir: env.DATA_DIR || fileURLToPath(new URL('../../../data', import.meta.url)),
 		jetstreamUrl: env.JETSTREAM_URL || undefined,
+		profileCheck: profileCheck === 'on',
 		judge: judge === 'shadow' ? { model, dailyLimit } : undefined
 	};
 }
