@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { detect, WEAK_THRESHOLD } from 'shut-labeller/detect';
-	import { STRONG_REASONS, WEAK_REASONS } from '#lib/judge/reasons.js';
+	import { STRONG_REASONS, TEMPLATE_REASONS, WEAK_REASONS } from '#lib/judge/reasons.js';
 	import DoorSign from '#lib/sign/door_sign.svelte';
 	import { LABELLER_HANDLE, REPO_URL } from '#lib/site/config.js';
 
@@ -15,12 +15,15 @@
 	const reasons = $derived([
 		...new Set([
 			...verdict.strong.map((id) => STRONG_REASONS[id] ?? id),
-			...verdict.weak.map((group) => WEAK_REASONS[group] ?? group)
+			...verdict.weak.map((group) => WEAK_REASONS[group] ?? group),
+			...verdict.template.map((id) => TEMPLATE_REASONS[id] ?? id)
 		])
 	]);
 	const summary = $derived.by(() => {
 		if (!text.trim()) return 'Nothing typed yet.';
 		if (verdict.matched) return 'shut would label this, and subscribers would not see it.';
+		if (verdict.strict && !verdict.weak.length)
+			return 'Only the strict label would apply. Coinages on incel patterns are not enough for the standard label.';
 		if (verdict.strict)
 			return `Only the strict label would apply. One ambiguous match is not enough for the standard label; it takes ${WEAK_THRESHOLD} different kinds.`;
 		return 'Left alone.';
@@ -116,8 +119,8 @@
 							Or switch on the strict label
 						</dt>
 						<dd class="mt-2">
-							A second label, off by default, also covers a single ambiguous word. It hides more,
-							and gets more wrong.
+							A second label, off by default, also covers a single ambiguous word, and coinages on
+							incel patterns such as “-pilled” and “-maxxing”. It hides more, and gets more wrong.
 						</dd>
 					</div>
 					<div class="border-y-2 border-paint py-5">

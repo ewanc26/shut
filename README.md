@@ -14,7 +14,7 @@
 
 It watches new posts and profile edits, and labels the ones using incel vocabulary with `incel-language`. Subscribers have that content hidden by default, and can change the setting to warn or show it. A labeller cannot mute anything for people who have not subscribed to it.
 
-A second, stricter label, `incel-language-strict`, also covers a single ambiguous term. It is off by default; subscribers who want it switch it to hide or warn. Everything with the standard label also has the strict one, so either setting can be used on its own.
+A second, stricter label, `incel-language-strict`, also covers a single ambiguous term and coinages on incel templates such as "-pilled" and "-maxxing". It is off by default; subscribers who want it switch it to hide or warn. Everything with the standard label also has the strict one, so either setting can be used on its own.
 
 > Independent project; see the [trademark notice](TRADEMARKS.md).
 
@@ -31,12 +31,13 @@ Post text, hashtags, image and video alt text, link card titles and descriptions
 | One distinctive term                      | "incel" itself, dehumanising names for women and men, `-cel` identities, black pill and looksmaxxing vocabulary, "mogging", glorification of incel attacks | labelled         | labelled                |
 | Terms from two different ambiguous groups | "giga chad" with "cope", "hypergamy" with "normies"                                                                                                        | labelled         | labelled                |
 | One ambiguous term                        | "giga chad", "cope", "red pill"                                                                                                                            | not labelled     | labelled                |
+| A coinage on an incel template            | anything ending in "-pilled" or "-maxxing", such as "atprotopilled" or "protocolmaxxing"                                                                   | not labelled     | labelled                |
 
 Common disguises are undone first: lookalike and styled characters, accents, invisible characters, `f.o.i.d` spacing, number substitutions and stretched letters. The full list is in [`src/detect/lexicon.ts`](labeller/src/detect/lexicon.ts).
 
 ### Limits
 
-- **The strict label is often wrong.** "Cope", "normies" and "red pill" are everyday words, so most posts with only the strict label are not about incels at all.
+- **The strict label is often wrong.** "Cope", "normies" and "red pill" are everyday words, and "sleepmaxxing" or "bskypilled" are ordinary slang now, so most posts with only the strict label are not about incels at all.
 - **Matching is on words, not meaning.** Quoting or criticising a term gets labelled too. That is intended: the aim is not to see the language.
 - **Every mention of "incel" is labelled**, including news, research and insults. To keep those visible, remove the `incel` rule.
 - **Crossover slang is included.** "Mogging", "looksmaxxing" and "jestermaxxing" are now widely used outside incel spaces. In a dry run on 25 November 2026, 190 of about 1.3 million posts matched: most for the word "incel", and 36 only for "mog" or "looksmaxxing" words. Remove the `mog` and `looksmaxx` rules if that is too much.

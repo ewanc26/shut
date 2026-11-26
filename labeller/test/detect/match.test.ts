@@ -202,6 +202,34 @@ describe('detect', () => {
 			assert.equal(verdict.strict, true, text);
 		}
 	});
+	it('gives the strict label, and only that, for coinages on incel templates', () => {
+		for (const text of [
+			'so atprotopilled lately',
+			'protocolmaxxing all weekend',
+			'Atproto-Pilled',
+			'bskypilled',
+			'fibermaxxing and sleepmaxxing'
+		]) {
+			const verdict = detect([text]);
+			assert.equal(verdict.matched, false, text);
+			assert.equal(verdict.strict, true, text);
+			assert.equal(verdict.template.length, 1, text);
+		}
+	});
+	it('leaves ordinary words alone in the template rules', () => {
+		for (const text of [
+			'I spilled my coffee',
+			'unspilled milk',
+			'an anti-pilling fleece',
+			'stop dogpilling on them',
+			'the film was climaxing',
+			'maxxing out the card',
+			'the sweater pilled in the wash',
+			'take your pills'
+		]) {
+			assert.equal(detect([text]).strict, false, text);
+		}
+	});
 	it('gives no strict label to text without any term', () => {
 		for (const text of ['cancel my Excel subscription', 'Chad from accounting is on leave', '']) {
 			assert.equal(detect([text]).strict, false, text);

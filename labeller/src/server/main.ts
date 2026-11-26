@@ -82,9 +82,9 @@ jetstream.on('commit', (event) => {
 			// Not awaited: a slow or failing model must not hold up the queue.
 			if (judge) handOff(judge, uri, outcome);
 			if (outcome?.applied.length && outcome.verdict) {
-				const { strong, weak } = outcome.verdict;
+				const { strong, weak, template } = outcome.verdict;
 				console.log(
-					`labelled ${outcome.uri} ${outcome.applied.join(', ')} [${[...strong, ...weak].join(', ')}]`
+					`labelled ${outcome.uri} ${outcome.applied.join(', ')} [${[...strong, ...weak, ...template].join(', ')}]`
 				);
 			}
 			if (outcome?.negated.length) {
