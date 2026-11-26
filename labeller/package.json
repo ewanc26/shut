@@ -1,7 +1,7 @@
 {
 	"name": "shut-labeller",
 	"private": true,
-	"version": "0.5.0",
+	"version": "0.6.0",
 	"license": "MIT",
 	"type": "module",
 	"exports": {
