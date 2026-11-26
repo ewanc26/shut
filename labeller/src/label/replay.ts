@@ -3,10 +3,16 @@
 // exhaust the labeller.
 import { encode, toBytes } from '@atcute/cbor';
 import type { LabelerServer } from '@skyware/labeler';
+import { paced } from './pace.js';
 
 export const BATCH_SIZE = 500;
 /** No further batch is read while a subscriber has this many bytes waiting. */
 export const BUFFER_LIMIT = 1_000_000;
+/**
+ * The most new labels announced in a second. Bluesky's AppView documents a limit of 5, which
+ * catching up after a pause could otherwise pass.
+ */
+export const LIVE_PER_SECOND = 4;
 const DRAIN_MS = 20;
 const OPEN = 1;
 const CHANNEL = 'com.atproto.label.subscribeLabels';
@@ -55,7 +61,12 @@ function message(seq: number, { src, uri, cid, val, neg, cts, exp, sig }: Saved)
  * Replaces the server's subscription handler. Call it straight after creating the server,
  * before its routes are registered.
  */
-export function batchedReplay(server: LabelerServer, batchSize = BATCH_SIZE): void {
+export function batchedReplay(
+	server: LabelerServer,
+	batchSize = BATCH_SIZE,
+	perSecond = LIVE_PER_SECOND
+): void {
+	const announce = paced(1000 / perSecond);
 	/** The last label each subscriber was sent from history, so live delivery never repeats it. */
 	const replayed = new WeakMap<Socket, number>();
 	let newest = 0;
@@ -63,8 +74,11 @@ export function batchedReplay(server: LabelerServer, batchSize = BATCH_SIZE): vo
 	server['emitLabel'] = (seq: number, label: Saved) => {
 		newest = Math.max(newest, seq);
 		const bytes = message(seq, label);
-		server['connections'].get(CHANNEL)?.forEach((socket: Socket) => {
-			if (seq > (replayed.get(socket) ?? 0)) socket.send(bytes);
+		// Who still needs it is decided when it is sent: a replay may have covered it by then.
+		announce(() => {
+			server['connections'].get(CHANNEL)?.forEach((socket: Socket) => {
+				if (seq > (replayed.get(socket) ?? 0)) socket.send(bytes);
+			});
 		});
 	};
 

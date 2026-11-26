@@ -20,7 +20,8 @@
 		"test": "vitest run",
 		"activate": "tsx --env-file-if-exists=../.env src/cli/activate.ts",
 		"learn": "tsx src/cli/learn.ts",
-		"backfill": "tsx --env-file-if-exists=../.env src/cli/backfill.ts"
+		"backfill": "tsx --env-file-if-exists=../.env src/cli/backfill.ts",
+		"monitor": "tsx --env-file-if-exists=../.env src/cli/monitor.ts"
 	},
 	"dependencies": {
 		"@atcute/cbor": "1.0.7",

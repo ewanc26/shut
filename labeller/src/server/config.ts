@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url';
-import { MODELS, type Model } from '../judge/model.js';
+import { readBackends, type Backend } from '../judge/provider.js';
+import { DEFAULT_MAX_DELAY_MINUTES, LONGEST_DELAY_MINUTES } from '../schedule/gate.js';
 
 export interface Config {
 	did: string;
@@ -11,7 +12,9 @@ export interface Config {
 	/** Whether to fetch and judge the existing profile of each account seen posting. */
 	profileCheck: boolean;
 	/** Set to log what the experimental judge would label. It never writes labels. */
-	judge: { model: Model; dailyLimit: number } | undefined;
+	judge: { backends: Backend[]; dailyLimit: number } | undefined;
+	/** Set to pause on the monitor's advice, but never further behind than the delay. */
+	schedule: { file: string; maxDelayMs: number } | undefined;
 }
 
 export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -33,9 +36,12 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 	const dailyLimit = Number(env.AI_JUDGE_DAILY_LIMIT?.trim() || 200);
 	if (!Number.isInteger(dailyLimit) || dailyLimit < 1)
 		throw new Error('AI_JUDGE_DAILY_LIMIT must be a whole number above zero.');
-	const wanted = env.AI_JUDGE_MODEL?.trim() || MODELS[0];
-	const model = MODELS.find((known) => known === wanted);
-	if (!model) throw new Error(`AI_JUDGE_MODEL must be one of: ${MODELS.join(', ')}.`);
+	// Read even when the judge is off, so a mistake shows before it is turned on.
+	const backends = readBackends(env);
+	const delay = Number(env.SCHEDULE_MAX_DELAY_MINUTES?.trim() || DEFAULT_MAX_DELAY_MINUTES);
+	if (!(delay >= 1 && delay <= LONGEST_DELAY_MINUTES))
+		throw new Error(`SCHEDULE_MAX_DELAY_MINUTES must be from 1 to ${LONGEST_DELAY_MINUTES}.`);
+	const file = env.SCHEDULE_FILE?.trim();
 
 	return {
 		did,
@@ -45,6 +51,7 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 		dataDir: env.DATA_DIR || fileURLToPath(new URL('../../../data', import.meta.url)),
 		jetstreamUrl: env.JETSTREAM_URL || undefined,
 		profileCheck: profileCheck === 'on',
-		judge: judge === 'shadow' ? { model, dailyLimit } : undefined
+		judge: judge === 'shadow' ? { backends, dailyLimit } : undefined,
+		schedule: file ? { file, maxDelayMs: delay * 60_000 } : undefined
 	};
 }

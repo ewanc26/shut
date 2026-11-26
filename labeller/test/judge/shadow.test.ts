@@ -238,7 +238,7 @@ describe('AI_JUDGE', () => {
 
 	it('needs no key in shadow mode', () => {
 		assert.deepEqual(readConfig(on).judge, {
-			model: 'deepseek-v4.1-flash-free',
+			backends: [{ provider: 'opencode', model: 'deepseek-v4.1-flash-free' }],
 			dailyLimit: 200
 		});
 	});

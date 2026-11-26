@@ -2,6 +2,7 @@
 // pnpm backfill [--minutes <n>]
 import { mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { setTimeout as wait } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { Jetstream } from '@bsky/jetstream';
@@ -10,9 +11,11 @@ import { backfillQueue } from '../backfill/queue.js';
 import { scan, type Tally } from '../backfill/scan.js';
 import { limitedFetch } from '../http/rate_limit.js';
 import { POST } from '../label/reconcile.js';
+import { pauseReason } from '../schedule/advice.js';
 
 const SERVICE = 'https://jetstream.us-east.bsky.network';
 const REPORT_MS = 10_000;
+const SCHEDULE_CHECK_MS = 10_000;
 
 const { values } = parseArgs({
 	args: process.argv.slice(2).filter((argument) => argument !== '--'),
@@ -68,39 +71,72 @@ const describe = ({ events, posts, matched, seq, time }: Tally) =>
 	`${(bytes / 1e6).toFixed(1)} MB, ${Math.round(posts / ((Date.now() - started) / 1000))} posts/s, ` +
 	`${(used() / 1024 ** 2).toFixed(1)} MiB on disk, at ${seq}${time ? ` (${time})` : ''}`;
 
+/** Why the monitor says to wait, if it does. The archive waits too, so no delay limit. */
+const busy = () => {
+	const file = process.env.SCHEDULE_FILE?.trim();
+	return file ? pauseReason(file) : undefined;
+};
+
 console.log(`Scanning from ${from} into ${path}`);
 const jetstream = new Jetstream({ service: SERVICE, apiKey, fetchImpl: counted });
-const source = jetstream.snapshot({
-	collections: [POST],
-	kinds: ['commit', 'account'],
-	afterSeq: from,
-	signal: stop.signal,
-	// Other messages can quote a record, and post text stays out of logs.
-	onError: (error) => {
-		if (error.name === 'DownloadError') console.warn(error.name, error.message);
-		else skipped++;
-	}
-});
 
-try {
-	const tally = await scan(source, queue, {
-		own,
-		full,
-		report: (progress) => {
-			if (Date.now() - reported < REPORT_MS) return;
-			reported = Date.now();
-			console.log(describe(progress));
+/** Scans until the end, a stop, or advice to pause. Answers whether it paused. */
+async function pass(): Promise<boolean> {
+	const pause = new AbortController();
+	const watch = setInterval(() => {
+		const reason = busy();
+		if (reason === undefined || pause.signal.aborted) return;
+		console.log(`Pausing: ${reason}`);
+		pause.abort();
+	}, SCHEDULE_CHECK_MS);
+	const signal = AbortSignal.any([stop.signal, pause.signal]);
+	const source = jetstream.snapshot({
+		collections: [POST],
+		kinds: ['commit', 'account'],
+		afterSeq: queue.cursor(),
+		signal,
+		// Other messages can quote a record, and post text stays out of logs.
+		onError: (error) => {
+			if (error.name === 'DownloadError') console.warn(error.name, error.message);
+			else skipped++;
 		}
 	});
-	const ending = full()
-		? 'Stopped at the disk limit'
-		: stop.signal.aborted
-			? 'Stopped'
-			: 'Reached the end';
-	console.log(`${ending}: ${describe(tally)}`);
-} catch (error) {
-	if (!stop.signal.aborted) throw error;
-	console.log(`Stopped at ${queue.cursor()}: ${queue.size()} queued, ${bytes} bytes.`);
+	try {
+		const tally = await scan(source, queue, {
+			own,
+			full,
+			report: (progress) => {
+				if (Date.now() - reported < REPORT_MS) return;
+				reported = Date.now();
+				console.log(describe(progress));
+			}
+		});
+		if (pause.signal.aborted && !stop.signal.aborted) return true;
+		const ending = full()
+			? 'Stopped at the disk limit'
+			: stop.signal.aborted
+				? 'Stopped'
+				: 'Reached the end';
+		console.log(`${ending}: ${describe(tally)}`);
+	} catch (error) {
+		if (!signal.aborted) throw error;
+		if (!stop.signal.aborted) return true;
+		console.log(`Stopped at ${queue.cursor()}: ${queue.size()} queued, ${bytes} bytes.`);
+	} finally {
+		clearInterval(watch);
+	}
+	return false;
+}
+
+try {
+	do {
+		const reason = busy();
+		if (reason !== undefined) console.log(`Waiting: ${reason}`);
+		while (busy() !== undefined && !stop.signal.aborted)
+			await wait(SCHEDULE_CHECK_MS, undefined, { signal: stop.signal }).catch(() => {});
+		if (stop.signal.aborted) break;
+		if (reason !== undefined) console.log(`Resuming from ${queue.cursor()}`);
+	} while (await pass());
 } finally {
 	queue.close();
 }

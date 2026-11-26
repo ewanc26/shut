@@ -49,7 +49,7 @@ function resetTime(value: number, now: number): number {
 }
 
 /** Retry-After is a number of seconds or an HTTP date. */
-function retryTime(value: string | null, now: number): number | undefined {
+export function retryTime(value: string | null, now: number): number | undefined {
 	if (!value?.trim()) return;
 	const seconds = Number(value);
 	const at = Number.isFinite(seconds) ? now + seconds * 1000 : Date.parse(value);

@@ -24,13 +24,15 @@ public instance is `@shut.croft.click`, served from `https://shut-labeller.croft
 - `labeller/src/detect/` judges text. It must stay free of Node-only APIs, because the website
   runs it in the browser.
 - `labeller/src/account/` turns an account into the labeller.
-- `labeller/src/judge/` asks a free OpenCode model about ambiguous records and only logs. Do not
-  let it write labels without being asked, and never give it a session, agent or tools. It may learn
-  from public posts if only pruned word counts are kept, in `data/`; never commit or paste post
-  text, and keep `examples.ts` invented. `pnpm evaluate` and `AI_JUDGE=shadow` send text to
-  OpenCode and use its allowance, so do not run them without being asked.
+- `labeller/src/judge/` asks an AI model (a free OpenCode one unless `AI_JUDGE_PROVIDER` says
+  otherwise) about ambiguous records and only logs. Do not let it write labels without being
+  asked, and never give it a session, agent or tools. It may learn from public posts if only
+  pruned word counts are kept, in `data/`; never commit or paste post text, and keep
+  `examples.ts` invented. `pnpm evaluate` and `AI_JUDGE=shadow` send text to the chosen provider
+  and use its allowance or credit, so do not run them without being asked.
 - `labeller/src/label/` decides and stores labels.
 - `labeller/src/stream/` tracks the Jetstream position.
+- `labeller/src/schedule/` measures the host and decides when the labeller and backfill pause.
 - `labeller/src/server/` runs the service; `labeller/src/cli/` holds one-off commands.
 - `website/src/lib/site/config.ts` holds the origin and the live labeller handle.
 - `website/src/lib/judge/reasons.ts` describes rules so the page never prints the terms.
