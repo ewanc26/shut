@@ -1,5 +1,6 @@
 // Fetches the existing profile of each account seen posting, once. Later edits arrive on
 // the stream, so there is no need to look again.
+import { limitedFetch } from '../http/rate_limit.js';
 
 export const APPVIEW = 'https://public.api.bsky.app';
 /** The most accounts one request may name. */
@@ -35,7 +36,7 @@ export function profileLookup({
 	checked,
 	deliver,
 	exempt,
-	request = fetch,
+	request = limitedFetch({ timeoutMs: TIMEOUT_MS }),
 	now = Date.now,
 	limit = PENDING_LIMIT
 }: LookupOptions) {
@@ -59,10 +60,12 @@ export function profileLookup({
 		return batch;
 	}
 
-	async function fetchProfiles(dids: string[]): Promise<Map<string, unknown>> {
+	/** Undefined when the server says to slow down. */
+	async function fetchProfiles(dids: string[]): Promise<Map<string, unknown> | undefined> {
 		const url = new URL('/xrpc/app.bsky.actor.getProfiles', APPVIEW);
 		for (const did of dids) url.searchParams.append('actors', did);
-		const response = await request(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+		const response = await request(url);
+		if (response.status === 429) return undefined;
 		if (!response.ok) throw new Error(`getProfiles answered ${response.status}`);
 		const { profiles } = (await response.json()) as { profiles?: { did: string }[] };
 		if (!Array.isArray(profiles)) throw new Error('getProfiles sent no list of profiles');
@@ -84,8 +87,9 @@ export function profileLookup({
 			if (flying.has(did)) stale.add(did);
 		},
 		/**
-		 * Fetches one batch, unless one is under way or a failure was recent. An account
-		 * whose request fails is dropped, and wanted again when it next posts.
+		 * Fetches one batch, unless one is under way or a failure was recent. A batch the
+		 * server refused with a 429 waits its turn again. After any other failure the accounts
+		 * are dropped, and wanted again when they next post.
 		 */
 		async run(): Promise<void> {
 			if (busy || now() < waitUntil || !pending.size) return;
@@ -94,6 +98,11 @@ export function profileLookup({
 				const batch = await nextBatch();
 				if (!batch.length) return;
 				const profiles = await fetchProfiles(batch);
+				if (!profiles) {
+					// The request limiter holds the next one until the server allows it.
+					for (const did of batch) if (!stale.has(did)) pending.add(did);
+					return;
+				}
 				for (const did of batch) if (!stale.has(did)) deliver(did, profiles.get(did));
 			} catch (error) {
 				waitUntil = now() + BACKOFF_MS;

@@ -95,6 +95,7 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
 - An instance set up before the strict label existed needs `pnpm declare --publish` once, so the account advertises it. Until then, apps ignore it.
 - `data/` holds the label database and the Jetstream position. Back it up. After a restart the labeller resumes where it stopped, as far back as Jetstream still holds events.
 - When an account posts for the first time, the labeller asks Bluesky's public API (`public.api.bsky.app`) for its existing profile, in batches, and judges it. The account is then remembered in the database and not fetched again, even after the word list changes; later edits arrive on the stream. Set `PROFILE_CHECK=off` to disable this.
+- Requests to the public API, and the backfill's requests to the post archive, are rate limited per server. After a 429 nothing more is sent to that server until the time it asks for, and requests slow down as an advertised quota runs low.
 - If a label cannot be saved the process exits, so run it under something that restarts it.
 - Editing a labelled post to remove the language, or deleting it, withdraws the label.
 - To withdraw a wrong label by hand, send a negation as the labeller account through `tools.ozone.moderation.emitEvent`, for example from [Ozone-compatible tooling](https://skyware.js.org/docs/labeler). A later matching edit labels the record again.

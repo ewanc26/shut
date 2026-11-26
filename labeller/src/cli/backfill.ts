@@ -8,6 +8,7 @@ import { Jetstream } from '@bsky/jetstream';
 import { databaseBytes, limitBytes } from '../backfill/budget.js';
 import { backfillQueue } from '../backfill/queue.js';
 import { scan, type Tally } from '../backfill/scan.js';
+import { limitedFetch } from '../http/rate_limit.js';
 import { POST } from '../label/reconcile.js';
 
 const SERVICE = 'https://jetstream.us-east.bsky.network';
@@ -39,8 +40,10 @@ if (full()) throw new Error('The databases already fill BACKFILL_MAX_GIB. Nothin
 let bytes = 0;
 /** Records the archive client could not read. */
 let skipped = 0;
+// No timeout: segments are large, and the archive client does its own retrying.
+const limited = limitedFetch();
 const counted: typeof fetch = async (input, init) => {
-	const response = await fetch(input, init);
+	const response = await limited(input, init);
 	if (!response.body) return response;
 	const meter = new TransformStream<Uint8Array, Uint8Array>({
 		transform(chunk, controller) {
