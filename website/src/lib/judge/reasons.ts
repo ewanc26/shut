@@ -28,6 +28,12 @@ export const STRONG_REASONS: Readonly<Record<string, string>> = {
 	gentleman: 'Echo of an attacker’s words'
 };
 
+/** One entry for every template rule in the labeller's word list. */
+export const TEMPLATE_REASONS: Readonly<Record<string, string>> = {
+	anypill: 'A coinage on the “-pilled” pattern',
+	anymaxx: 'A coinage on the “-maxxing” pattern'
+};
+
 /** One entry for every weak group in the labeller's word list. */
 export const WEAK_REASONS: Readonly<Record<string, string>> = {
 	archetype: 'A stock-character nickname',

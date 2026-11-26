@@ -21,12 +21,12 @@ jetstream.onCreate(POST, ({ commit }) => {
 	seen++;
 	const segments = postText(commit.record);
 	const verdict = detect(segments);
-	const { strong, weak } = verdict;
+	const { strong, weak, template } = verdict;
 	if (!verdict.strict) return;
 	strict++;
 	if (verdict.matched) matched++;
 	console.log(
-		`${verdict.matched ? '' : '(strict only) '}[${[...strong, ...weak].join(', ')}] ${JSON.stringify(segments.join(' | ').slice(0, 300))}`
+		`${verdict.matched ? '' : '(strict only) '}[${[...strong, ...weak, ...template].join(', ')}] ${JSON.stringify(segments.join(' | ').slice(0, 300))}`
 	);
 });
 jetstream.on('error', (error) => console.error('Jetstream error:', error?.message ?? error));

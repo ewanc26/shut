@@ -124,3 +124,18 @@ export const WEAK: Readonly<Record<string, string>> = {
 		'mgtow|amogg(?:ed|ing)|monkey[ -]?branch(?:es|ed|ing)?|beta providers?|wage[ -]?cucks?|' +
 		'beta[ -]?cucks?|high[ -]value (?:man|men|male|males)'
 };
+
+/**
+ * Coinages built on incel templates, such as "<anything>pilled" or "<anything>maxxing". Most
+ * are harmless slang, so these only earn the strict label and never count towards the
+ * standard one.
+ */
+export const TEMPLATE: readonly Rule[] = [
+	{
+		id: 'anypill',
+		// Not "spilled", fabric "anti-pilling", or a "dogpilling" pile-on.
+		pattern: '(?!(?:un|re)?spill|dog-?pill|anti-?pill)\\p{L}{2,}-?pill(?:ed|ing)'
+	},
+	// Double x only: "climaxing" and "maxing out" are ordinary words.
+	{ id: 'anymaxx', pattern: '\\p{L}{2,}-?maxx(?:ed|er|ers|ing)?' }
+];
