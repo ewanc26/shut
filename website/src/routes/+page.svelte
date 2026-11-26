@@ -162,8 +162,9 @@
 			</li>
 			<li><strong>It is mostly English,</strong> and it cannot read text inside pictures.</li>
 			<li>
-				<strong>It mostly looks forward.</strong> Posts made while it was not running are not labelled.
-				An older profile is checked only once its account posts.
+				<strong>It mostly looks forward.</strong> Posts made before it started, or during a long outage,
+				are not labelled. Labels can arrive late when its server is busy. An older profile is checked
+				only once its account posts.
 			</li>
 			<li>
 				<strong>A label describes words,</strong> not the person who wrote them. Found a mistake?

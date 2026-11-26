@@ -14,6 +14,8 @@ export interface ShadowOptions {
 	/** The most calls in one UTC day. A restart resets the count. */
 	dailyLimit: number;
 	queueLimit?: number;
+	/** How long one question may take. */
+	timeoutMs?: number;
 	log?: (line: string) => void;
 }
 
@@ -26,7 +28,13 @@ interface Failure {
 
 const nextDay = (time: number) => new Date(time).setUTCHours(24, 0, 0, 0);
 
-export function shadowJudge({ ask, dailyLimit, queueLimit, log = console.log }: ShadowOptions) {
+export function shadowJudge({
+	ask,
+	dailyLimit,
+	queueLimit,
+	timeoutMs = TIMEOUT_MS,
+	log = console.log
+}: ShadowOptions) {
 	const stop = new AbortController();
 	const queue = pendingQueue(queueLimit);
 	/** The one call in flight. */
@@ -38,6 +46,8 @@ export function shadowJudge({ ask, dailyLimit, queueLimit, log = console.log }: 
 	let day = '';
 	let today = 0;
 	let pausedUntil = 0;
+	/** Set while the labeller is paused. */
+	let held = false;
 	const total = {
 		calls: 0,
 		incel: 0,
@@ -74,7 +84,7 @@ export function shadowJudge({ ask, dailyLimit, queueLimit, log = console.log }: 
 	}
 
 	function pump(): void {
-		if (stop.signal.aborted || current || queue.size() === 0) return;
+		if (stop.signal.aborted || held || current || queue.size() === 0) return;
 		const now = Date.now();
 		if (now < pausedUntil) return resumeAt(pausedUntil);
 		const date = new Date(now).toISOString().slice(0, 10);
@@ -95,7 +105,7 @@ export function shadowJudge({ ask, dailyLimit, queueLimit, log = console.log }: 
 
 	async function run(entry: Pending) {
 		try {
-			const signal = AbortSignal.any([stop.signal, AbortSignal.timeout(TIMEOUT_MS)]);
+			const signal = AbortSignal.any([stop.signal, AbortSignal.timeout(timeoutMs)]);
 			const answer = await ask(entry.segments, signal);
 			total[answer.sense] += 1;
 			// The address and decision only: logs never hold post text.
@@ -128,6 +138,15 @@ export function shadowJudge({ ask, dailyLimit, queueLimit, log = console.log }: 
 		forget(uri: string): void {
 			if (uri === currentUri) withdrawn = true;
 			queue.remove(uri);
+		},
+		/** Asks nothing new until resumed. A call in flight finishes. */
+		hold(): void {
+			held = true;
+			clearTimeout(timer);
+		},
+		resume(): void {
+			held = false;
+			pump();
 		},
 		/** Resolves when no call is in flight. Records may still be waiting. */
 		async idle(): Promise<void> {

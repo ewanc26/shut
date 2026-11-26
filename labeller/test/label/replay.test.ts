@@ -26,7 +26,8 @@ beforeAll(async () => {
 		signingKey: randomBytes(32).toString('hex'),
 		dbPath: join(dir, 'labels.db')
 	});
-	batchedReplay(server, BATCH);
+	// Unpaced here; pacing is covered below and in pace.test.ts.
+	batchedReplay(server, BATCH, Infinity);
 	await new Promise<void>((resolve, reject) =>
 		server.start({ host: '127.0.0.1', port: 0 }, (error) => (error ? reject(error) : resolve()))
 	);
@@ -158,6 +159,38 @@ describe('batchedReplay', () => {
 				[error]
 			);
 		}
+	});
+
+	it('paces new labels, without repeating any a replay already covered', async () => {
+		// Its own server: the routes keep the handler installed before they were registered.
+		const slow = new LabelerServer({
+			did: server.did,
+			signingKey: randomBytes(32).toString('hex'),
+			dbPath: join(dir, 'slow.db')
+		});
+		batchedReplay(slow, BATCH, 20);
+		await new Promise<void>((resolve, reject) =>
+			slow.start({ host: '127.0.0.1', port: 0 }, (error) => (error ? reject(error) : resolve()))
+		);
+		const { port } = slow.app.server.address() as AddressInfo;
+		const address = `ws://127.0.0.1:${port}/xrpc/${CHANNEL}`;
+		const live = await subscribe('', address);
+		await vi.waitFor(() => assert.equal(slow['connections'].get(CHANNEL)?.size, 1));
+		const started = Date.now();
+		for (let i = 0; i < 6; i++)
+			await slow.createLabel({ uri: `at://did:plc:a/app.bsky.feed.post/${i}`, val: 'x' });
+		// Joins while most are still waiting to be announced.
+		const late = await subscribe('?cursor=0', address);
+		await vi.waitFor(() => assert.equal(live.frames.length, 6), { timeout: 3_000 });
+		// Five gaps of 50 ms separate six labels.
+		assert.ok(Date.now() - started >= 240);
+		assert.deepEqual(late.seqs(), upTo(6));
+		assert.deepEqual(live.seqs(), upTo(6));
+		live.socket.close();
+		late.socket.close();
+		await Promise.all([live.closed, late.closed]);
+		await new Promise<void>((resolve) => slow.close(resolve));
+		slow.db.close();
 	});
 
 	it('stops reading once the subscriber leaves', async () => {

@@ -3,19 +3,22 @@ import { join } from 'node:path';
 import { Jetstream } from '@skyware/jetstream';
 import { LabelerServer } from '@skyware/labeler';
 import { handOff } from '../judge/handoff.js';
-import { openHost } from '../judge/host.js';
-import { askModel, type Model } from '../judge/model.js';
+import { askModel } from '../judge/model.js';
+import { openBackends } from '../judge/open.js';
 import { shadowJudge } from '../judge/shadow.js';
 import { batchedReplay } from '../label/replay.js';
 import { type Change, COLLECTIONS, POST, PROFILE, reconcile } from '../label/reconcile.js';
 import { checkedProfiles, serverStore } from '../label/store.js';
 import { INTERVAL_MS, profileLookup } from '../profile/lookup.js';
+import { pauseReason } from '../schedule/advice.js';
+import { gate } from '../schedule/gate.js';
 import { loadCursor, saveCursor } from '../stream/cursor.js';
-import { readConfig } from './config.js';
+import { readConfig, type Config } from './config.js';
 
 /** Replayed after a restart. Reprocessing is harmless, gaps are not. */
 const REWIND_MICROSECONDS = 5_000_000;
 const SAVE_INTERVAL_MS = 5_000;
+const SCHEDULE_CHECK_MS = 10_000;
 
 const config = readConfig();
 mkdirSync(config.dataDir, { recursive: true });
@@ -32,17 +35,20 @@ const store = await serverStore(server);
 
 // Started beside the labeller: records arriving before it is ready go unjudged.
 let judge: ReturnType<typeof shadowJudge> | undefined;
+/** Whether the stream, profile lookups and judge are stopped. The server stays up. */
+let paused = false;
 
-async function startJudge({ model, dailyLimit }: { model: Model; dailyLimit: number }) {
+async function startJudge({ backends, dailyLimit }: NonNullable<Config['judge']>) {
 	try {
-		const host = await openHost(join(config.dataDir, 'opencode'), model);
+		const host = await openBackends(backends, join(config.dataDir, 'opencode'));
 		judge = shadowJudge({
 			ask: (segments, signal) => askModel(host.generate, segments, signal),
-			dailyLimit
+			dailyLimit,
+			timeoutMs: host.timeoutMs
 		});
-		console.log(`Judge ready: ${model}`);
+		if (paused) judge.hold();
 	} catch (error) {
-		console.warn('The judge is off, OpenCode did not start:', (error as Error).message);
+		console.warn('The judge is off, it did not start:', (error as Error).message);
 	}
 }
 if (config.judge) void startJudge(config.judge);
@@ -56,12 +62,6 @@ await new Promise<void>((resolve, reject) => {
 });
 
 let processed = loadCursor(cursorPath);
-const jetstream = new Jetstream({
-	wantedCollections: COLLECTIONS,
-	...(config.jetstreamUrl ? { endpoint: config.jetstreamUrl } : {}),
-	...(processed ? { cursor: processed - REWIND_MICROSECONDS } : {})
-});
-
 // Changes are handled one at a time so the saved cursor never passes unfinished work.
 let queue = Promise.resolve();
 let failed = false;
@@ -115,32 +115,56 @@ const lookup = config.profileCheck
 				})
 		})
 	: undefined;
-const looker = lookup && setInterval(() => void lookup.run(), INTERVAL_MS);
+let looker: ReturnType<typeof setInterval> | undefined;
+let jetstream: Jetstream | undefined;
 
-jetstream.on('commit', (event) => {
-	const { commit, did } = event;
-	const profile = commit.collection === PROFILE && commit.rkey === 'self';
-	// Before queueing, so a fetch under way cannot deliver an older version afterwards.
-	if (profile) lookup?.supersede(did);
-	enqueue(async () => {
-		const outcome = await apply({
-			did,
-			collection: commit.collection,
-			rkey: commit.rkey,
-			operation: commit.operation,
-			...(commit.operation === 'delete' ? {} : { cid: commit.cid, record: commit.record })
-		});
-		// Not awaited: a slow or failing model must not hold up the queue.
-		const uri = `at://${did}/${commit.collection}/${commit.rkey}`;
-		if (judge) handOff(judge, uri, outcome);
-		if (profile) await checked.add(did);
-		if (commit.collection === POST && commit.operation === 'create') lookup?.want(did);
-		processed = event.time_us;
+/** Starts reading the stream from just before the last event handled. */
+function connect() {
+	const source = new Jetstream({
+		wantedCollections: COLLECTIONS,
+		...(config.jetstreamUrl ? { endpoint: config.jetstreamUrl } : {}),
+		...(processed ? { cursor: processed - REWIND_MICROSECONDS } : {})
 	});
-});
-jetstream.on('open', () => console.log('Connected to Jetstream'));
-jetstream.on('close', () => console.warn('Jetstream connection closed'));
-jetstream.on('error', (error) => console.error('Jetstream error:', error?.message ?? error));
+	jetstream = source;
+	looker = lookup && setInterval(() => void lookup.run(), INTERVAL_MS);
+	follow(source);
+	source.start();
+}
+
+function disconnect() {
+	clearInterval(looker);
+	jetstream?.close();
+	jetstream = undefined;
+}
+
+function follow(source: Jetstream) {
+	source.on('commit', (event) => {
+		// A closed connection can still deliver; those events are read again on resuming.
+		if (source !== jetstream) return;
+		const { commit, did } = event;
+		const profile = commit.collection === PROFILE && commit.rkey === 'self';
+		// Before queueing, so a fetch under way cannot deliver an older version afterwards.
+		if (profile) lookup?.supersede(did);
+		enqueue(async () => {
+			const outcome = await apply({
+				did,
+				collection: commit.collection,
+				rkey: commit.rkey,
+				operation: commit.operation,
+				...(commit.operation === 'delete' ? {} : { cid: commit.cid, record: commit.record })
+			});
+			// Not awaited: a slow or failing model must not hold up the queue.
+			const uri = `at://${did}/${commit.collection}/${commit.rkey}`;
+			if (judge) handOff(judge, uri, outcome);
+			if (profile) await checked.add(did);
+			if (commit.collection === POST && commit.operation === 'create') lookup?.want(did);
+			processed = event.time_us;
+		});
+	});
+	source.on('open', () => console.log('Connected to Jetstream'));
+	source.on('close', () => console.warn('Jetstream connection closed'));
+	source.on('error', (error) => console.error('Jetstream error:', error?.message ?? error));
+}
 
 const save = () => {
 	if (processed) saveCursor(cursorPath, processed);
@@ -148,13 +172,36 @@ const save = () => {
 const saver = setInterval(save, SAVE_INTERVAL_MS);
 
 let stopping = false;
+const shouldPause = config.schedule && gate(config.schedule.maxDelayMs);
+
+/** Follows the monitor's advice, within the longest delay allowed. */
+function schedule() {
+	if (stopping || !config.schedule || !shouldPause) return;
+	const reason = pauseReason(config.schedule.file);
+	const lag = processed ? Date.now() - processed / 1000 : undefined;
+	const next = shouldPause(reason !== undefined, lag);
+	if (next === paused) return;
+	paused = next;
+	if (paused) {
+		console.log(`Paused: ${reason}`);
+		disconnect();
+		judge?.hold();
+		// Saved once the events already read are handled.
+		void queue.then(save);
+	} else {
+		console.log(reason ? `Catching up despite: ${reason}` : 'Resumed');
+		connect();
+		judge?.resume();
+	}
+}
+
 async function shutdown(code: number) {
 	if (stopping) return;
 	stopping = true;
 	clearInterval(saver);
-	clearInterval(looker);
+	clearInterval(scheduler);
 	judge?.close();
-	jetstream.close();
+	disconnect();
 	// Called from inside the queue on failure, so let that task finish first.
 	await new Promise(setImmediate);
 	await queue;
@@ -166,4 +213,7 @@ async function shutdown(code: number) {
 process.on('SIGINT', () => void shutdown(0));
 process.on('SIGTERM', () => void shutdown(0));
 
-jetstream.start();
+connect();
+// Straight away, so a restart while the machine is busy pauses at once.
+schedule();
+const scheduler = config.schedule && setInterval(schedule, SCHEDULE_CHECK_MS);

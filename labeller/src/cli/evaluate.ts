@@ -1,18 +1,22 @@
 // Runs the invented examples through the model: pnpm evaluate [model]
-// This sends them to OpenCode and uses its free allowance.
+// This sends them to the provider set by AI_JUDGE_PROVIDER and uses its allowance.
 import { fileURLToPath } from 'node:url';
 import { EXAMPLES } from '../judge/examples.js';
-import { openHost } from '../judge/host.js';
-import { askModel, MODELS } from '../judge/model.js';
+import { askModel } from '../judge/model.js';
+import { openBackend } from '../judge/open.js';
+import { describeBackend, readBackend, type Backend } from '../judge/provider.js';
 
-const wanted = process.argv.slice(2).find((argument) => argument !== '--') ?? MODELS[0];
-const model = MODELS.find((known) => known === wanted);
-if (!model) {
-	console.error(`Choose one of: ${MODELS.join(', ')}`);
+const wanted = process.argv.slice(2).find((argument) => argument !== '--');
+let backend: Backend;
+try {
+	backend = readBackend({ ...process.env, ...(wanted ? { AI_JUDGE_MODEL: wanted } : {}) });
+} catch (error) {
+	console.error((error as Error).message);
 	process.exit(2);
 }
+console.log(`Asking ${describeBackend(backend)}`);
 const directory = fileURLToPath(new URL('../../../data/opencode', import.meta.url));
-const host = await openHost(directory, model);
+const host = await openBackend(backend, directory);
 let agreed = 0;
 let asked = 0;
 try {
@@ -26,6 +30,6 @@ try {
 	console.error('Stopped:', error instanceof Error ? error.message : error);
 	process.exitCode = 1;
 }
-console.log(`${model}: agreed on ${agreed} of ${asked} asked, ${EXAMPLES.length} in total`);
+console.log(`${backend.model}: agreed on ${agreed} of ${asked} asked, ${EXAMPLES.length} in total`);
 await host.close();
 process.exit();

@@ -59,7 +59,8 @@
 				edits that hit a single ambiguous term. Their text, including image descriptions and link
 				cards, is sent to <a href="https://opencode.ai/docs/zen/">OpenCode</a> and the model’s provider,
 				without the author’s account ID or the post’s address. OpenCode says the provider keeps none of
-				it and does not train on it. The answer is only logged and never changes a label.
+				it and does not train on it. If that service is unavailable, a small model on the labeller’s own
+				server is asked instead. The answer is only logged and never changes a label.
 			</p>
 		</div>
 		<div>
