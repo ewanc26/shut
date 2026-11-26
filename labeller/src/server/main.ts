@@ -6,6 +6,7 @@ import { handOff } from '../judge/handoff.js';
 import { openHost } from '../judge/host.js';
 import { askModel, type Model } from '../judge/model.js';
 import { shadowJudge } from '../judge/shadow.js';
+import { batchedReplay } from '../label/replay.js';
 import { type Change, COLLECTIONS, POST, PROFILE, reconcile } from '../label/reconcile.js';
 import { checkedProfiles, serverStore } from '../label/store.js';
 import { INTERVAL_MS, profileLookup } from '../profile/lookup.js';
@@ -25,6 +26,8 @@ const server = new LabelerServer({
 	signingKey: config.signingKey,
 	dbPath: join(config.dataDir, 'labels.db')
 });
+// Straight away: the server registers its routes just after it is created.
+batchedReplay(server);
 const store = await serverStore(server);
 
 // Started beside the labeller: records arriving before it is ready go unjudged.
