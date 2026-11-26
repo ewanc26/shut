@@ -31,7 +31,14 @@ export const STRONG_REASONS: Readonly<Record<string, string>> = {
 /** One entry for every template rule in the labeller's word list. */
 export const TEMPLATE_REASONS: Readonly<Record<string, string>> = {
 	anypill: 'A coinage on the “-pilled” pattern',
-	anymaxx: 'A coinage on the “-maxxing” pattern'
+	anymaxx: 'A coinage on the “-maxxing” pattern',
+	names: 'A nickname that is also an ordinary name',
+	insults: 'A general insult',
+	sexual: 'A sexual term',
+	phrases: 'An everyday phrase',
+	slang: 'Broad internet slang',
+	shorthand: 'Short initials',
+	compounds: 'A loosely matched compound'
 };
 
 /** One entry for every weak group in the labeller's word list. */
@@ -47,5 +54,6 @@ export const WEAK_REASONS: Readonly<Record<string, string>> = {
 	hierarchy: 'Social-rank labels',
 	forum: 'General forum shorthand',
 	rodger: 'References that are often innocent',
-	manosphere: 'Wider “manosphere” slang'
+	manosphere: 'Wider “manosphere” slang',
+	slur: 'A racial slur'
 };
