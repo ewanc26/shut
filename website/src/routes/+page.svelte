@@ -21,8 +21,8 @@
 	const summary = $derived.by(() => {
 		if (!text.trim()) return 'Nothing typed yet.';
 		if (verdict.matched) return 'shut would label this, and subscribers would not see it.';
-		if (verdict.weak.length)
-			return `Left alone. One ambiguous match is not enough; it takes ${WEAK_THRESHOLD} different kinds.`;
+		if (verdict.strict)
+			return `Only the strict label would apply. One ambiguous match is not enough for the standard label; it takes ${WEAK_THRESHOLD} different kinds.`;
 		return 'Left alone.';
 	});
 </script>
@@ -109,6 +109,17 @@
 							Words with everyday meanings only count when {WEAK_THRESHOLD} different kinds appear together.
 						</dd>
 					</div>
+					<div class="border-t-2 border-paint py-5">
+						<dt
+							class="font-(family-name:--font-sign) text-[1.45rem] leading-tight font-extrabold font-stretch-[80%]"
+						>
+							Or switch on the strict label
+						</dt>
+						<dd class="mt-2">
+							A second label, off by default, also covers a single ambiguous word. It hides more,
+							and gets more wrong.
+						</dd>
+					</div>
 					<div class="border-y-2 border-paint py-5">
 						<dt
 							class="font-(family-name:--font-sign) text-[1.45rem] leading-tight font-extrabold font-stretch-[80%]"
@@ -163,7 +174,8 @@
 				{#if LABELLER_HANDLE}
 					<p>
 						Open <a href="https://bsky.app/profile/{LABELLER_HANDLE}">@{LABELLER_HANDLE}</a> on Bluesky
-						and choose to subscribe. Then pick hide, warn or show for its label.
+						and choose to subscribe. Then pick hide, warn or show for each label. The strict label starts
+						off.
 					</p>
 				{:else}
 					<p class="text-2xl font-bold">Not open yet.</p>

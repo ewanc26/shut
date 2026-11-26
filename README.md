@@ -14,6 +14,8 @@
 
 It watches new posts and profile edits, and labels the ones using incel vocabulary with `incel-language`. Subscribers have that content hidden by default, and can change the setting to warn or show it. A labeller cannot mute anything for people who have not subscribed to it.
 
+A second, stricter label, `incel-language-strict`, also covers a single ambiguous term. It is off by default; subscribers who want it switch it to hide or warn. Everything with the standard label also has the strict one, so either setting can be used on its own.
+
 > Independent project; see the [trademark notice](TRADEMARKS.md).
 
 ## Subscribe
@@ -24,16 +26,17 @@ Open [@shut.croft.click](https://bsky.app/profile/shut.croft.click) on Bluesky a
 
 Post text, hashtags, image and video alt text, link card titles and descriptions, and profile display names and bios. A label on a post covers that post only. A label on a profile covers the profile, not the account's posts.
 
-| Hit                                       | Examples                                                                                                                                                   | Result       |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| One distinctive term                      | "incel" itself, dehumanising names for women and men, `-cel` identities, black pill and looksmaxxing vocabulary, "mogging", glorification of incel attacks | labelled     |
-| Terms from two different ambiguous groups | "giga chad" with "cope", "hypergamy" with "normies"                                                                                                        | labelled     |
-| One ambiguous term                        | "giga chad", "cope", "red pill"                                                                                                                            | not labelled |
+| Hit                                       | Examples                                                                                                                                                   | `incel-language` | `incel-language-strict` |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ----------------------- |
+| One distinctive term                      | "incel" itself, dehumanising names for women and men, `-cel` identities, black pill and looksmaxxing vocabulary, "mogging", glorification of incel attacks | labelled         | labelled                |
+| Terms from two different ambiguous groups | "giga chad" with "cope", "hypergamy" with "normies"                                                                                                        | labelled         | labelled                |
+| One ambiguous term                        | "giga chad", "cope", "red pill"                                                                                                                            | not labelled     | labelled                |
 
 Common disguises are undone first: lookalike and styled characters, accents, invisible characters, `f.o.i.d` spacing, number substitutions and stretched letters. The full list is in [`src/detect/lexicon.ts`](labeller/src/detect/lexicon.ts).
 
 ### Limits
 
+- **The strict label is often wrong.** "Cope", "normies" and "red pill" are everyday words, so most posts with only the strict label are not about incels at all.
 - **Matching is on words, not meaning.** Quoting or criticising a term gets labelled too. That is intended: the aim is not to see the language.
 - **Every mention of "incel" is labelled**, including news, research and insults. To keep those visible, remove the `incel` rule.
 - **Crossover slang is included.** "Mogging", "looksmaxxing" and "jestermaxxing" are now widely used outside incel spaces. In a dry run on 25 November 2026, 190 of about 1.3 million posts matched: most for the word "incel", and 36 only for "mog" or "looksmaxxing" words. Remove the `mog` and `looksmaxx` rules if that is too much.
@@ -78,12 +81,13 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
    pnpm activate https://labels.example
    ```
 
-   It asks for the account password and an emailed code, adds the signing key and server address to the account's identity, publishes the label, and offers a profile if the account has none. It uses the same signing key as the server.
+   It asks for the account password and an emailed code, adds the signing key and server address to the account's identity, publishes the labels, and offers a profile if the account has none. It uses the same signing key as the server.
 
 4. Set `LABELLER_HANDLE` in `website/src/lib/site/config.ts`, so the website links to the account.
 
 ## Running it
 
+- An instance set up before the strict label existed needs `pnpm declare --publish` once, so the account advertises it. Until then, apps ignore it.
 - `data/` holds the label database and the Jetstream position. Back it up. After a restart the labeller resumes where it stopped, as far back as Jetstream still holds events.
 - If a label cannot be saved the process exits, so run it under something that restarts it.
 - Editing a labelled post to remove the language, or deleting it, withdraws the label.

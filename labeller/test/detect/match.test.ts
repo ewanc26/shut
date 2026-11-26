@@ -192,6 +192,21 @@ describe('detect', () => {
 	it('adds up weak hits across the parts of one record', () => {
 		assert.equal(detect(['normies', 'pure cope']).matched, true);
 	});
+	it('gives the strict label to every standard match', () => {
+		for (const text of labelled) assert.equal(detect([text]).strict, true, text);
+	});
+	it('gives the strict label, and only that, for one ambiguous group', () => {
+		for (const text of ['pure cope', 'took the red pill in The Matrix', 'giga chad']) {
+			const verdict = detect([text]);
+			assert.equal(verdict.matched, false, text);
+			assert.equal(verdict.strict, true, text);
+		}
+	});
+	it('gives no strict label to text without any term', () => {
+		for (const text of ['cancel my Excel subscription', 'Chad from accounting is on leave', '']) {
+			assert.equal(detect([text]).strict, false, text);
+		}
+	});
 	it('does not count several words from one weak group twice', () => {
 		assert.deepEqual(detect(['giga chad stacy becky tyrone']).weak, ['archetype']);
 	});
