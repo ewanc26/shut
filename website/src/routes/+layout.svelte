@@ -51,8 +51,9 @@
 				The labeller reads public posts and profiles, asking Bluesky for the profile of an account
 				it sees posting. It stores the labels it makes, a list of accounts whose profiles it has
 				checked and its place in the stream, not post or profile text. Its logs note which posts
-				were labelled and which rules matched. A separate tool in the source can count words across
-				public posts; it keeps counts, not posts.
+				were labelled and which rules matched. It also counts the words in some new posts, to teach
+				a small model which words surround this vocabulary; it keeps counts of words seen in many
+				posts, not the posts. That model’s opinion is only logged.
 			</p>
 			<p class="mt-3">
 				The public labeller also asks an AI model for a second opinion on some posts and profile

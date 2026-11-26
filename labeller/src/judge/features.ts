@@ -1,9 +1,12 @@
-// Words from a post, with the ambiguous terms removed, so the model learns from the context around them.
-import { WEAK } from '../detect/lexicon.js';
+// Words from a post, with the word list's terms removed, so the model learns from the context
+// around them rather than relearning the list.
+import { STRONG, WEAK } from '../detect/lexicon.js';
 import { variants } from '../detect/normalise.js';
 
-const ambiguous = new RegExp(
-	`(?<![\\p{L}\\p{N}])(?:${Object.values(WEAK).join('|')})(?![\\p{L}\\p{N}])`,
+const terms = new RegExp(
+	`(?<![\\p{L}\\p{N}])(?:${[...STRONG.map(({ pattern }) => pattern), ...Object.values(WEAK)]
+		.map((pattern) => `(?:${pattern})`)
+		.join('|')})(?![\\p{L}\\p{N}])`,
 	'gu'
 );
 
@@ -11,7 +14,7 @@ const ambiguous = new RegExp(
 export function features(segments: readonly string[]): string[] {
 	const words = segments.flatMap((segment) => {
 		const [folded = ''] = variants(segment);
-		return folded.replace(ambiguous, ' ').match(/\p{L}{2,}/gu) ?? [];
+		return folded.replace(terms, ' ').match(/\p{L}{2,}/gu) ?? [];
 	});
 	return [...new Set(words)];
 }

@@ -40,25 +40,49 @@ export function prune(counts: Counts, minPosts = MIN_POSTS): Counts {
 	return { docs: { ...counts.docs }, words };
 }
 
-/** Log likelihood ratio per word, with add-one smoothing. */
-export function weights(counts: Counts): Map<string, number> {
-	const { pos, neg } = counts.docs;
-	const result = new Map<string, number>();
-	for (const [word, tally] of counts.words) {
-		const p = (tally.pos + 1) / (pos + 2);
-		const n = (tally.neg + 1) / (neg + 2);
-		result.set(word, Math.log(p / n));
-	}
-	return result;
+/** How strongly one word points to `pos`: a log likelihood ratio with add-one smoothing. */
+export function weight({ docs }: Counts, tally: Tally): number {
+	return Math.log((tally.pos + 1) / (docs.pos + 2) / ((tally.neg + 1) / (docs.neg + 2)));
 }
+
+/** Frees memory once there are more than `max` words, forgetting the rarest first. */
+export function trim(counts: Counts, max: number): void {
+	for (let seen = 1; counts.words.size > max && seen < MIN_POSTS; seen++) {
+		for (const [word, { pos, neg }] of counts.words) {
+			if (pos + neg <= seen) counts.words.delete(word);
+		}
+	}
+}
+
+/** Raised when what is counted changes, so older counts are not mixed in. */
+const VERSION = 2;
 
 /** A plain JSON form holding only pruned counts. */
 export function serialise(counts: Counts): string {
 	const pruned = prune(counts);
 	return JSON.stringify({
-		version: 1,
+		version: VERSION,
 		minPosts: MIN_POSTS,
 		docs: pruned.docs,
 		words: Object.fromEntries([...pruned.words].sort(([a], [b]) => a.localeCompare(b)))
 	});
+}
+
+/** Reads what `serialise` wrote. Throws on anything else. */
+export function parse(text: string): Counts {
+	const saved = JSON.parse(text) as {
+		version?: unknown;
+		docs?: Tally;
+		words?: Record<string, Tally>;
+	} | null;
+	const whole = (tally: Tally | undefined): Tally => {
+		const { pos, neg } = tally ?? {};
+		if (!Number.isInteger(pos) || !Number.isInteger(neg)) throw new Error('Unreadable counts.');
+		return { pos: pos as number, neg: neg as number };
+	};
+	if (saved?.version !== VERSION || !saved.words) throw new Error('Unreadable counts.');
+	return {
+		docs: whole(saved.docs),
+		words: new Map(Object.entries(saved.words).map(([word, tally]) => [word, whole(tally)]))
+	};
 }
