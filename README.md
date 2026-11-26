@@ -189,7 +189,11 @@ Read these before turning it on:
 
 It never holds up labelling: one record is asked about at a time, and each service is given 30 seconds. Records over a rate limit or the daily limit wait in a queue. The queue is held in memory only, so a restart empties it. It keeps up to 5,000 records, dropping the oldest, and gives up on any that have waited a day. A record that is deleted, or edited so it no longer needs an opinion, leaves the queue; deleting a whole account does not remove its records. OpenCode keeps its files in `data/opencode/`, apart from any OpenCode setup on the machine. If you run a public instance with it on, update the privacy note on the website first, and again if you change provider.
 
-`pnpm learn 10` watches live posts for ten minutes and saves word counts to `data/judge-counts.json`, using the word list's own decisions as labels. It keeps only words seen in at least 20 posts, and no post text. Nothing reads the counts yet.
+### Word-count learner
+
+A second, much smaller judge learns by itself. Set `AI_LEARNER=shadow` and the labeller counts the words in new posts, taught by the word list: a post the list labels is one kind, a post with no hit the other, and it takes as many of the second as of the first. The list's own terms are removed first, so it learns the words around them. **It cannot write labels.** Once it has 500 posts of each kind it logs `learner would label` for new posts hitting one ambiguous group, and every ten minutes how often it flagged posts the list did and did not label, checked on each post before learning it.
+
+It is taught only by the list, so at best it copies the list's judgement, mistakes included. Those figures measure agreement with the list, not whether either is right. Only counts of words seen in at least 20 posts are saved, to `judge-counts.json` in the data directory, and never post text; rarer words are held in memory until a restart. Nothing is sent anywhere. `pnpm learn 10` teaches it from the live stream for ten minutes without running the labeller. If you run a public instance with it on, say so in your privacy note first.
 
 ## Website
 

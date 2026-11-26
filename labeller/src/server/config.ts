@@ -13,6 +13,8 @@ export interface Config {
 	profileCheck: boolean;
 	/** Set to log what the experimental judge would label. It never writes labels. */
 	judge: { backends: Backend[]; dailyLimit: number } | undefined;
+	/** Whether the word-count learner learns and logs its opinion. It never writes labels. */
+	learner: boolean;
 	/** Set to pause on the monitor's advice, but never further behind than the delay. */
 	schedule: { file: string; maxDelayMs: number } | undefined;
 }
@@ -36,6 +38,9 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 	const dailyLimit = Number(env.AI_JUDGE_DAILY_LIMIT?.trim() || 200);
 	if (!Number.isInteger(dailyLimit) || dailyLimit < 1)
 		throw new Error('AI_JUDGE_DAILY_LIMIT must be a whole number above zero.');
+	const learner = env.AI_LEARNER?.trim() || 'off';
+	if (learner !== 'off' && learner !== 'shadow')
+		throw new Error('AI_LEARNER must be off or shadow.');
 	// Read even when the judge is off, so a mistake shows before it is turned on.
 	const backends = readBackends(env);
 	const delay = Number(env.SCHEDULE_MAX_DELAY_MINUTES?.trim() || DEFAULT_MAX_DELAY_MINUTES);
@@ -52,6 +57,7 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
 		jetstreamUrl: env.JETSTREAM_URL || undefined,
 		profileCheck: profileCheck === 'on',
 		judge: judge === 'shadow' ? { backends, dailyLimit } : undefined,
+		learner: learner === 'shadow',
 		schedule: file ? { file, maxDelayMs: delay * 60_000 } : undefined
 	};
 }

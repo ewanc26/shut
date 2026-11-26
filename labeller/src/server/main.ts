@@ -2,7 +2,9 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { Jetstream } from '@skyware/jetstream';
 import { LabelerServer } from '@skyware/labeler';
+import { postText } from '../detect/record.js';
 import { handOff } from '../judge/handoff.js';
+import { describeLearner, learner, loadCounts, saveCounts } from '../judge/learner.js';
 import { askModel } from '../judge/model.js';
 import { openBackends } from '../judge/open.js';
 import { shadowJudge } from '../judge/shadow.js';
@@ -19,6 +21,7 @@ import { readConfig, type Config } from './config.js';
 const REWIND_MICROSECONDS = 5_000_000;
 const SAVE_INTERVAL_MS = 5_000;
 const SCHEDULE_CHECK_MS = 10_000;
+const LEARNER_SAVE_MS = 10 * 60_000;
 
 const config = readConfig();
 mkdirSync(config.dataDir, { recursive: true });
@@ -52,6 +55,21 @@ async function startJudge({ backends, dailyLimit }: NonNullable<Config['judge']>
 	}
 }
 if (config.judge) void startJudge(config.judge);
+
+const countsPath = join(config.dataDir, 'judge-counts.json');
+const student = config.learner ? learner(loadCounts(countsPath)) : undefined;
+
+/** Keeps what was learned. A failure here must not stop labelling. */
+function saveLearning() {
+	if (!student) return;
+	try {
+		saveCounts(countsPath, student.counts);
+		console.log(describeLearner(student));
+	} catch (error) {
+		console.warn('learner: could not save:', (error as Error).message);
+	}
+}
+const learnerSaver = student && setInterval(saveLearning, LEARNER_SAVE_MS);
 
 await new Promise<void>((resolve, reject) => {
 	server.start({ host: config.host, port: config.port }, (error, address) => {
@@ -156,6 +174,12 @@ function follow(source: Jetstream) {
 			// Not awaited: a slow or failing model must not hold up the queue.
 			const uri = `at://${did}/${commit.collection}/${commit.rkey}`;
 			if (judge) handOff(judge, uri, outcome);
+			if (student && commit.collection === POST && commit.operation === 'create') {
+				// Its opinion first, so a post is never judged by what it has just taught.
+				if (outcome?.ambiguous && student.opinion(outcome.ambiguous))
+					console.log(`learner would label ${uri}`);
+				if (did !== config.did) student.learn(postText(commit.record));
+			}
 			if (profile) await checked.add(did);
 			if (commit.collection === POST && commit.operation === 'create') lookup?.want(did);
 			processed = event.time_us;
@@ -200,12 +224,14 @@ async function shutdown(code: number) {
 	stopping = true;
 	clearInterval(saver);
 	clearInterval(scheduler);
+	clearInterval(learnerSaver);
 	judge?.close();
 	disconnect();
 	// Called from inside the queue on failure, so let that task finish first.
 	await new Promise(setImmediate);
 	await queue;
 	save();
+	saveLearning();
 	// Open subscriber sockets would otherwise keep the server from closing.
 	setTimeout(() => process.exit(code), 2_000).unref();
 	server.close(() => process.exit(code));
