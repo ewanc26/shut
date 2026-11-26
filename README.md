@@ -12,7 +12,7 @@
 
 **Shut the door on incel language.** shut is a Bluesky labeller that hides it from the people who subscribe.
 
-It watches new posts and profile edits, and labels the ones using incel vocabulary with `incel-language`. Subscribers have that content hidden by default, and can change the setting to warn or show it. A labeller cannot mute anything for people who have not subscribed to it.
+It watches new posts and profiles, and labels the ones using incel vocabulary with `incel-language`. Subscribers have that content hidden by default, and can change the setting to warn or show it. A labeller cannot mute anything for people who have not subscribed to it.
 
 A second, stricter label, `incel-language-strict`, also covers a single ambiguous term, coinages on incel templates such as "-pilled" and "-maxxing", and broad words from published lexicons. It is off by default; subscribers who want it switch it to hide or warn. Everything with the standard label also has the strict one, so either setting can be used on its own.
 
@@ -46,7 +46,7 @@ Common disguises are undone first: lookalike and styled characters, accents, inv
 - **Every mention of "incel" is labelled**, including news, research and insults. To keep those visible, remove the `incel` rule.
 - **Crossover slang is included.** "Mogging", "looksmaxxing" and "jestermaxxing" are now widely used outside incel spaces. In a dry run on 25 November 2026, 190 of about 1.3 million posts matched: most for the word "incel", and 36 only for "mog" or "looksmaxxing" words. Remove the `mog` and `looksmaxx` rules if that is too much.
 - **English terms only.** Text inside images and videos is not read.
-- **No backfill.** Only posts and profile edits seen while the labeller is running are labelled.
+- **No backfill of posts.** Only posts seen while the labeller is running are labelled. Existing profiles are checked once, for accounts seen posting (see [Running it](#running-it)).
 
 ## Try it
 
@@ -94,6 +94,7 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
 
 - An instance set up before the strict label existed needs `pnpm declare --publish` once, so the account advertises it. Until then, apps ignore it.
 - `data/` holds the label database and the Jetstream position. Back it up. After a restart the labeller resumes where it stopped, as far back as Jetstream still holds events.
+- When an account posts for the first time, the labeller asks Bluesky's public API (`public.api.bsky.app`) for its existing profile, in batches, and judges it. The account is then remembered in the database and not fetched again, even after the word list changes; later edits arrive on the stream. Set `PROFILE_CHECK=off` to disable this.
 - If a label cannot be saved the process exits, so run it under something that restarts it.
 - Editing a labelled post to remove the language, or deleting it, withdraws the label.
 - To withdraw a wrong label by hand, send a negation as the labeller account through `tools.ozone.moderation.emitEvent`, for example from [Ozone-compatible tooling](https://skyware.js.org/docs/labeler). A later matching edit labels the record again.

@@ -9,7 +9,7 @@ import { afterAll, beforeAll, describe, it } from 'vitest';
 import { LabelerServer } from '@skyware/labeler';
 import { type Change, type LabelStore, POST, reconcile } from '../../src/label/reconcile.js';
 import { LABEL, STRICT_LABEL } from '../../src/label/definition.js';
-import { serverStore } from '../../src/label/store.js';
+import { checkedProfiles, serverStore } from '../../src/label/store.js';
 import { loadCursor, saveCursor } from '../../src/stream/cursor.js';
 
 const dir = mkdtempSync(join(tmpdir(), 'shut-'));
@@ -162,5 +162,15 @@ describe('cursor', () => {
 		assert.equal(loadCursor(path), 1_700_000_000_000_000);
 		saveCursor(path, Number.NaN);
 		assert.equal(loadCursor(path), undefined);
+	});
+});
+
+describe('checkedProfiles', () => {
+	it('remembers an account', async () => {
+		const checked = await checkedProfiles(server);
+		assert.equal(await checked.has('did:plc:seen'), false);
+		await checked.add('did:plc:seen');
+		await checked.add('did:plc:seen');
+		assert.equal(await checked.has('did:plc:seen'), true);
 	});
 });

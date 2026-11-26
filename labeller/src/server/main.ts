@@ -6,8 +6,9 @@ import { handOff } from '../judge/handoff.js';
 import { openHost } from '../judge/host.js';
 import { askModel, type Model } from '../judge/model.js';
 import { shadowJudge } from '../judge/shadow.js';
-import { COLLECTIONS, reconcile } from '../label/reconcile.js';
-import { serverStore } from '../label/store.js';
+import { type Change, COLLECTIONS, POST, PROFILE, reconcile } from '../label/reconcile.js';
+import { checkedProfiles, serverStore } from '../label/store.js';
+import { INTERVAL_MS, profileLookup } from '../profile/lookup.js';
 import { loadCursor, saveCursor } from '../stream/cursor.js';
 import { readConfig } from './config.js';
 
@@ -58,45 +59,80 @@ const jetstream = new Jetstream({
 	...(processed ? { cursor: processed - REWIND_MICROSECONDS } : {})
 });
 
-// Events are handled one at a time so the saved cursor never passes unfinished work.
+// Changes are handled one at a time so the saved cursor never passes unfinished work.
 let queue = Promise.resolve();
 let failed = false;
 
-jetstream.on('commit', (event) => {
+function enqueue(work: () => Promise<void>) {
 	queue = queue.then(async () => {
 		if (failed) return;
 		try {
-			const { commit } = event;
-			const uri = `at://${event.did}/${commit.collection}/${commit.rkey}`;
-			const outcome = await reconcile(
-				{
-					did: event.did,
-					collection: commit.collection,
-					rkey: commit.rkey,
-					operation: commit.operation,
-					...(commit.operation === 'delete' ? {} : { cid: commit.cid, record: commit.record })
-				},
-				store,
-				config.did
-			);
-			// Not awaited: a slow or failing model must not hold up the queue.
-			if (judge) handOff(judge, uri, outcome);
-			if (outcome?.applied.length && outcome.verdict) {
-				const { strong, weak, template } = outcome.verdict;
-				console.log(
-					`labelled ${outcome.uri} ${outcome.applied.join(', ')} [${[...strong, ...weak, ...template].join(', ')}]`
-				);
-			}
-			if (outcome?.negated.length) {
-				console.log(`negated ${outcome.uri} ${outcome.negated.join(', ')}`);
-			}
-			processed = event.time_us;
+			await work();
 		} catch (error) {
 			// Exit without advancing, so the supervisor restarts us at this event.
 			failed = true;
 			console.error('Could not process an event:', error);
 			void shutdown(1);
 		}
+	});
+}
+
+async function apply(change: Change) {
+	const outcome = await reconcile(change, store, config.did);
+	if (outcome?.applied.length && outcome.verdict) {
+		const { strong, weak, template } = outcome.verdict;
+		console.log(
+			`labelled ${outcome.uri} ${outcome.applied.join(', ')} [${[...strong, ...weak, ...template].join(', ')}]`
+		);
+	}
+	if (outcome?.negated.length) {
+		console.log(`negated ${outcome.uri} ${outcome.negated.join(', ')}`);
+	}
+	return outcome;
+}
+
+const checked = await checkedProfiles(server);
+const lookup = config.profileCheck
+	? profileLookup({
+			checked,
+			exempt: config.did,
+			// Not sent to the judge: there are far more of these than its allowance covers.
+			deliver: (did, profile) =>
+				enqueue(async () => {
+					if (profile) {
+						await apply({
+							did,
+							collection: PROFILE,
+							rkey: 'self',
+							operation: 'update',
+							record: profile
+						});
+					}
+					await checked.add(did);
+				})
+		})
+	: undefined;
+const looker = lookup && setInterval(() => void lookup.run(), INTERVAL_MS);
+
+jetstream.on('commit', (event) => {
+	const { commit, did } = event;
+	const profile = commit.collection === PROFILE && commit.rkey === 'self';
+	// Before queueing, so a fetch under way cannot deliver an older version afterwards.
+	if (profile) lookup?.supersede(did);
+	enqueue(async () => {
+		const outcome = await apply({
+			did,
+			collection: commit.collection,
+			rkey: commit.rkey,
+			operation: commit.operation,
+			...(commit.operation === 'delete' ? {} : { cid: commit.cid, record: commit.record })
+		});
+		// Not awaited: a slow or failing model must not hold up the queue.
+		const uri = `at://${did}/${commit.collection}/${commit.rkey}`;
+		if (judge) handOff(judge, uri, outcome);
+		if (profile) await checked.add(did);
+		if (commit.collection === POST && commit.operation === 'create') lookup?.want(did);
+		processed = event.time_us;
 	});
 });
 jetstream.on('open', () => console.log('Connected to Jetstream'));
@@ -113,6 +149,7 @@ async function shutdown(code: number) {
 	if (stopping) return;
 	stopping = true;
 	clearInterval(saver);
+	clearInterval(looker);
 	judge?.close();
 	jetstream.close();
 	// Called from inside the queue on failure, so let that task finish first.
