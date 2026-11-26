@@ -81,11 +81,14 @@ jetstream.on('commit', (event) => {
 			);
 			// Not awaited: a slow or failing model must not hold up the queue.
 			if (judge) handOff(judge, uri, outcome);
-			if (outcome?.action === 'labelled') {
+			if (outcome?.applied.length && outcome.verdict) {
 				const { strong, weak } = outcome.verdict;
-				console.log(`labelled ${outcome.uri} [${[...strong, ...weak].join(', ')}]`);
-			} else if (outcome?.action === 'negated') {
-				console.log(`negated ${outcome.uri}`);
+				console.log(
+					`labelled ${outcome.uri} ${outcome.applied.join(', ')} [${[...strong, ...weak].join(', ')}]`
+				);
+			}
+			if (outcome?.negated.length) {
+				console.log(`negated ${outcome.uri} ${outcome.negated.join(', ')}`);
 			}
 			processed = event.time_us;
 		} catch (error) {

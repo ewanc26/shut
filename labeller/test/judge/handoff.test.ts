@@ -7,9 +7,9 @@ import { reconcile, type Change, type LabelStore } from '../../src/label/reconci
 function store(): LabelStore {
 	const labels = new Map<string, { cid?: string }>();
 	return {
-		active: async (uri) => labels.get(uri),
-		apply: async (uri, cid) => void labels.set(uri, cid ? { cid } : {}),
-		negate: async (uri) => void labels.delete(uri)
+		active: async (uri, label) => labels.get(`${uri} ${label}`),
+		apply: async (uri, cid, label) => void labels.set(`${uri} ${label}`, cid ? { cid } : {}),
+		negate: async (uri, _cid, label) => void labels.delete(`${uri} ${label}`)
 	};
 }
 
