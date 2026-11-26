@@ -23,7 +23,7 @@
 		if (!text.trim()) return 'Nothing typed yet.';
 		if (verdict.matched) return 'shut would label this, and subscribers would not see it.';
 		if (verdict.strict && !verdict.weak.length)
-			return 'Only the strict label would apply. Coinages on incel patterns are not enough for the standard label.';
+			return 'Only the strict label would apply. Coinages and broad words are not enough for the standard label.';
 		if (verdict.strict)
 			return `Only the strict label would apply. One ambiguous match is not enough for the standard label; it takes ${WEAK_THRESHOLD} different kinds.`;
 		return 'Left alone.';
@@ -119,8 +119,9 @@
 							Or switch on the strict label
 						</dt>
 						<dd class="mt-2">
-							A second label, off by default, also covers a single ambiguous word, and coinages on
-							incel patterns such as “-pilled” and “-maxxing”. It hides more, and gets more wrong.
+							A second label, off by default, also covers a single ambiguous word, coinages on incel
+							patterns such as “-pilled” and “-maxxing”, and many broad words that are usually
+							innocent. It hides far more, and gets much more wrong.
 						</dd>
 					</div>
 					<div class="border-y-2 border-paint py-5">

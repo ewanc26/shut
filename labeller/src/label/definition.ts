@@ -35,7 +35,7 @@ export const DEFINITIONS = [
 				lang: 'en',
 				name: 'Incel language (strict)',
 				description:
-					'A stricter version of "Incel language", off by default. It also covers a single ambiguous term, such as "cope" or "red pill", so it catches more and is wrong more often. Applied automatically by word matching. It describes the words, not the author.'
+					'A stricter version of "Incel language", off by default. It also covers a single ambiguous term, such as "cope" or "red pill", and broad words and names, such as "toilet" or "Chad". Most of what it adds is unrelated to incels. Applied automatically by word matching. It describes the words, not the author.'
 			}
 		]
 	}

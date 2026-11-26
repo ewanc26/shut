@@ -14,7 +14,10 @@
 
 It watches new posts and profile edits, and labels the ones using incel vocabulary with `incel-language`. Subscribers have that content hidden by default, and can change the setting to warn or show it. A labeller cannot mute anything for people who have not subscribed to it.
 
-A second, stricter label, `incel-language-strict`, also covers a single ambiguous term and coinages on incel templates such as "-pilled" and "-maxxing". It is off by default; subscribers who want it switch it to hide or warn. Everything with the standard label also has the strict one, so either setting can be used on its own.
+A second, stricter label, `incel-language-strict`, also covers a single ambiguous term, coinages on incel templates such as "-pilled" and "-maxxing", and broad words from published lexicons. It is off by default; subscribers who want it switch it to hide or warn. Everything with the standard label also has the strict one, so either setting can be used on its own.
+
+> [!WARNING]
+> **Disclaimer.** shut matches words, not meaning. A label does not say that an author is an incel or holds any view, and the word list is neither complete nor reliably precise. The strict label in particular includes common names, everyday words and phrases such as "Chad", "toilet", "lockdown" and "it's over", so most of what it catches is likely to be unrelated. The word list contains slurs and sexual terms. shut is provided as is, without warranty, under the [MIT licence](LICENSE).
 
 > Independent project; see the [trademark notice](TRADEMARKS.md).
 
@@ -32,6 +35,7 @@ Post text, hashtags, image and video alt text, link card titles and descriptions
 | Terms from two different ambiguous groups | "giga chad" with "cope", "hypergamy" with "normies"                                                                                                        | labelled         | labelled                |
 | One ambiguous term                        | "giga chad", "cope", "red pill"                                                                                                                            | not labelled     | labelled                |
 | A coinage on an incel template            | anything ending in "-pilled" or "-maxxing", such as "atprotopilled" or "protocolmaxxing"                                                                   | not labelled     | labelled                |
+| A broad word or phrase                    | "Chad", "toilet", "lockdown", "sigma", "used goods"                                                                                                        | not labelled     | labelled                |
 
 Common disguises are undone first: lookalike and styled characters, accents, invisible characters, `f.o.i.d` spacing, number substitutions and stretched letters. The full list is in [`src/detect/lexicon.ts`](labeller/src/detect/lexicon.ts).
 
@@ -157,6 +161,8 @@ pnpm build
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and the checks required before opening a pull request.
 
 ## Credits
+
+Some word-list entries were informed by the table of incel-specific words in Jennifer Golbeck, "A dataset for the study of online radicalization through incel forum archives", _Journal of Quantitative Description: Digital Media_ (2024), [doi:10.51685/jqd.2024.004](https://doi.org/10.51685/jqd.2024.004). Further entries were informed by the lexicon in Emily Klein and Jennifer Golbeck, "A lexicon for studying radicalization in incel communities", _WebSci '24_, [doi:10.1145/3614419.3644005](https://doi.org/10.1145/3614419.3644005), whose appendix is published with the [data record](https://doi.org/10.7910/DVN/MS9ODP) under CC BY-SA 4.0. shut does not use the forum posts in that dataset.
 
 Use of the dataset from [IYKYK: Using language models to decode extremist cryptolects](https://arxiv.org/abs/2506.05635) is planned, not guaranteed. Nothing in shut uses it yet. Credit to its authors:
 

@@ -78,6 +78,36 @@ const labelled = [
 	'she wants a high value man, pure hypergamy',
 	'normies calling him a beta cuck',
 	'an omega male on the black pill',
+	// Terms informed by Golbeck (2024).
+	'cumskin cope',
+	'so age pilling lately',
+	'another teencel',
+	'brocel moment',
+	'mayocel cope',
+	'itcel here',
+	'japcel and slavcel threads',
+	'such a currywhore thing to say',
+	'heightpill is real',
+	'the racepills and wristpill threads',
+	'so voice pilled it hurts',
+	'statusmaxing again',
+	'just heightmaxer things',
+	'got lifemogged',
+	'he life-mogs everyone',
+	'she betabuxxed him',
+	'giga stacy only dates a soyboi',
+	'gigacoping while the normies watch',
+	'whitepill for the normies',
+	// Terms informed by Klein and Golbeck (2024).
+	'sandcel and muslimcel threads',
+	'a turbocel',
+	'female humanoid organisms again',
+	'cuckmaxxing now',
+	'the just be asian theory',
+	'life as a deathnic',
+	'tacocel and kimchicel',
+	'a femmoid',
+	'got dolphmogged',
 	// Evasion.
 	'#Foid_Logic',
 	'f_o_i_d',
@@ -107,7 +137,6 @@ const ignored = [
 	'cancel my Excel subscription',
 	'Marcel posted an excellent parcel',
 	'we need to accelerate',
-	'Chad from accounting is on leave',
 	'Chad, Stacy and Becky are coming to dinner',
 	'healthy coping mechanisms',
 	"I can't cope with this weather",
@@ -176,6 +205,8 @@ const ignored = [
 	'follow @foid.bsky.social',
 	'read https://example.com/blackpill',
 	'flight A 1 2 B 3',
+	'cheap dickpills online',
+	'my life, Mog, and other cats',
 	''
 ];
 
@@ -196,7 +227,23 @@ describe('detect', () => {
 		for (const text of labelled) assert.equal(detect([text]).strict, true, text);
 	});
 	it('gives the strict label, and only that, for one ambiguous group', () => {
-		for (const text of ['pure cope', 'took the red pill in The Matrix', 'giga chad']) {
+		for (const text of [
+			'pure cope',
+			'took the red pill in The Matrix',
+			'giga chad',
+			'gigastacy',
+			'gigacoping',
+			'what a whitepill',
+			'soyboi',
+			'#ItsOver',
+			'gtfih',
+			'a sexhaver',
+			'coomers',
+			'wahmen',
+			'wagie',
+			'sheboon',
+			'cumskin'
+		]) {
 			const verdict = detect([text]);
 			assert.equal(verdict.matched, false, text);
 			assert.equal(verdict.strict, true, text);
@@ -223,7 +270,8 @@ describe('detect', () => {
 			'an anti-pilling fleece',
 			'stop dogpilling on them',
 			'the film was climaxing',
-			'maxxing out the card',
+			'a TJMaxx haul',
+			'back from TK-Maxx',
 			'the sweater pilled in the wash',
 			'take your pills'
 		]) {
@@ -231,7 +279,59 @@ describe('detect', () => {
 		}
 	});
 	it('gives no strict label to text without any term', () => {
-		for (const text of ['cancel my Excel subscription', 'Chad from accounting is on leave', '']) {
+		for (const text of [
+			'cancel my Excel subscription',
+			'',
+			'a brother in his cell',
+			'it cells are in column B',
+			'take your water pill',
+			'an anti-age pill advert',
+			'the softmax layer',
+			'money max savings account',
+			'the white pill is paracetamol',
+			'soy bolognese for tea',
+			'a curry house',
+			'an inkwell and quill',
+			'the same sex have rights',
+			'a cucumber skin',
+			'sand castles and a turbo engine',
+			'just be Asian for a day',
+			'the death nicked him'
+		]) {
+			assert.equal(detect([text]).strict, false, text);
+		}
+	});
+	it('gives the strict label, and only that, for broad terms', () => {
+		for (const text of [
+			'Chad from accounting is on leave',
+			'chadpreet is my cousin',
+			'the toilet is blocked',
+			'cuckolded',
+			'loli',
+			'its over there',
+			'it’s over',
+			'she hit the wall',
+			'selling used goods',
+			'maxxing out the card',
+			'during lockdown',
+			'a female humanoid robot',
+			'FD',
+			'jbw',
+			'dogpilled',
+			'agepill',
+			'riceskin',
+			'inkel'
+		]) {
+			const verdict = detect([text]);
+			assert.equal(verdict.matched, false, text);
+			assert.equal(verdict.strict, true, text);
+		}
+	});
+	it('never adds broad terms up to the standard label', () => {
+		assert.equal(detect(['Chad said it is over, flush the toilet in lockdown']).matched, false);
+	});
+	it('still leaves the shops TJ and TK Maxx alone', () => {
+		for (const text of ['a TJ Maxx haul', 'TJMaxx', 'TK Maxx']) {
 			assert.equal(detect([text]).strict, false, text);
 		}
 	});
