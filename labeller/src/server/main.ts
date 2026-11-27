@@ -10,7 +10,7 @@ import { openBackends } from '../judge/open.js';
 import { shadowJudge } from '../judge/shadow.js';
 import { batchedReplay } from '../label/replay.js';
 import { type Change, COLLECTIONS, POST, PROFILE, reconcile } from '../label/reconcile.js';
-import { checkedProfiles, serverStore } from '../label/store.js';
+import { checkedProfiles, moveProfileLabels, serverStore } from '../label/store.js';
 import { INTERVAL_MS, profileLookup } from '../profile/lookup.js';
 import { pauseReason } from '../schedule/advice.js';
 import { gate } from '../schedule/gate.js';
@@ -35,6 +35,8 @@ const server = new LabelerServer({
 // Straight away: the server registers its routes just after it is created.
 batchedReplay(server);
 const store = await serverStore(server);
+const moved = await moveProfileLabels(server, store);
+if (moved) console.log(`moved ${moved} profiles onto the profile label`);
 
 // Started beside the labeller: records arriving before it is ready go unjudged.
 let judge: ReturnType<typeof shadowJudge> | undefined;

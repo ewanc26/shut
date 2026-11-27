@@ -4,7 +4,9 @@ Guidance for AI coding agents working in **shut**.
 
 ## Project overview
 
-A Bluesky labeller that applies `incel-language` to posts and profiles, with a static website. The
+A Bluesky labeller that labels incel language and incel influenced language in posts
+(`incel-language`, `incel-language-strict`) and profiles (`incel-language-profile`,
+`incel-language-profile-strict`), with a static website. The
 public instance is `@shut.croft.click`, served from `https://shut-labeller.croft.click`.
 
 - Language: TypeScript; Svelte 5 and SvelteKit 3 for the website

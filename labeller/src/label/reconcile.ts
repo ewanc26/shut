@@ -1,7 +1,14 @@
 import { detect, type Verdict } from '../detect/match.js';
 import { postText, profileText } from '../detect/record.js';
 import { isCandidate } from '../judge/candidate.js';
-import { LABEL, LABELS, type Label, STRICT_LABEL } from './definition.js';
+import {
+	INFLUENCED_LABEL,
+	LABEL,
+	LABELS,
+	type Label,
+	PROFILE_INFLUENCED_LABEL,
+	PROFILE_LABEL
+} from './definition.js';
 
 export const POST = 'app.bsky.feed.post';
 export const PROFILE = 'app.bsky.actor.profile';
@@ -34,8 +41,8 @@ export type Outcome =
 			/** Labels withdrawn. */
 			negated: Label[];
 			/**
-			 * Set when the standard label was left off on one ambiguous group, which is worth a
-			 * second opinion. The strict label may still have been applied.
+			 * Set when the explicit label was left off on one ambiguous group, which is worth a
+			 * second opinion. The influenced label may still have been applied.
 			 */
 			ambiguous?: string[];
 	  }
@@ -62,9 +69,14 @@ export async function reconcile(
 	const uri = `at://${did}/${collection}/${rkey}`;
 	const segments = operation === 'delete' ? [] : extract(record);
 	const verdict = operation === 'delete' ? undefined : detect(segments);
+	// Posts and profiles have labels of their own. Every label is still checked on both, so a
+	// profile labelled before it had its own label loses the post labels when next seen.
+	const post = collection === POST;
 	const wanted: Record<Label, boolean> = {
-		[LABEL]: verdict?.matched ?? false,
-		[STRICT_LABEL]: verdict?.strict ?? false
+		[LABEL]: post && (verdict?.matched ?? false),
+		[INFLUENCED_LABEL]: post && (verdict?.strict ?? false),
+		[PROFILE_LABEL]: !post && (verdict?.matched ?? false),
+		[PROFILE_INFLUENCED_LABEL]: !post && (verdict?.strict ?? false)
 	};
 
 	const applied: Label[] = [];
@@ -84,8 +96,9 @@ export async function reconcile(
 		}
 	}
 
-	// A record whose standard label was just withdrawn is not sent for an opinion.
-	const ambiguous = verdict && isCandidate(verdict) && !negated.includes(LABEL);
+	// A record whose explicit label was just withdrawn is not sent for an opinion.
+	const ambiguous =
+		verdict && isCandidate(verdict) && !negated.includes(post ? LABEL : PROFILE_LABEL);
 	if (!applied.length && !negated.length && !ambiguous) return;
 	return { uri, verdict, applied, negated, ...(ambiguous ? { ambiguous: segments } : {}) };
 }

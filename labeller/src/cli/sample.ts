@@ -26,14 +26,16 @@ jetstream.onCreate(POST, ({ commit }) => {
 	strict++;
 	if (verdict.matched) matched++;
 	console.log(
-		`${verdict.matched ? '' : '(strict only) '}[${[...strong, ...weak, ...template].join(', ')}] ${JSON.stringify(segments.join(' | ').slice(0, 300))}`
+		`${verdict.matched ? '' : '(influenced only) '}[${[...strong, ...weak, ...template].join(', ')}] ${JSON.stringify(segments.join(' | ').slice(0, 300))}`
 	);
 });
 jetstream.on('error', (error) => console.error('Jetstream error:', error?.message ?? error));
 jetstream.start();
 
 setTimeout(() => {
-	console.log(`\n${matched} of ${seen} posts would be labelled, ${strict} with the strict label.`);
+	console.log(
+		`\n${matched} of ${seen} posts would be labelled, ${strict} as incel influenced language.`
+	);
 	jetstream.close();
 	process.exit(0);
 }, seconds * 1000);

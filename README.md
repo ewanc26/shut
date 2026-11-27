@@ -12,12 +12,12 @@
 
 **Shut the door on incel language.** shut is a Bluesky labeller that hides it from the people who subscribe.
 
-It watches new posts and profiles, and labels the ones using incel vocabulary with `incel-language`. Subscribers have that content hidden by default, and can change the setting to warn or show it. A labeller cannot mute anything for people who have not subscribed to it.
+It watches new posts and profiles, and labels the ones using incel vocabulary: posts with `incel-language`, profiles with `incel-language-profile`. Subscribers have that content hidden by default, and can change the setting to warn or show it. A labeller cannot mute anything for people who have not subscribed to it.
 
-A second, stricter label, `incel-language-strict`, also covers a single ambiguous term, coinages on incel templates such as "-pilled" and "-maxxing", and broad words from published lexicons. It is off by default; subscribers who want it switch it to hide or warn. Everything with the standard label also has the strict one, so either setting can be used on its own.
+Each also has a broader label for **incel influenced language**: `incel-language-strict` for posts and `incel-language-profile-strict` for profiles. It also covers a single ambiguous term, coinages on incel templates such as "-pilled" and "-maxxing", and broad words from published lexicons. It is off by default; subscribers who want it switch it to hide or warn. Everything with an incel language label also has the matching influenced one, so either setting can be used on its own. (The post label keeps the identifier it was published under, from when it was called the strict label.)
 
 > [!WARNING]
-> **Disclaimer.** shut matches words, not meaning. A label does not say that an author is an incel or holds any view, and the word list is neither complete nor reliably precise. The strict label in particular includes common names, everyday words and phrases such as "Chad", "toilet", "lockdown" and "it's over", so most of what it catches is likely to be unrelated. The word list contains slurs and sexual terms. shut is provided as is, without warranty, under the [MIT licence](LICENSE).
+> **Disclaimer.** shut matches words, not meaning. A label does not say that an author is an incel or holds any view, and the word list is neither complete nor reliably precise. The incel influenced language labels in particular include common names, everyday words and phrases such as "Chad", "toilet", "lockdown" and "it's over", so most of what it catches is likely to be unrelated. The word list contains slurs and sexual terms. shut is provided as is, without warranty, under the [MIT licence](LICENSE).
 
 > Independent project; see the [trademark notice](TRADEMARKS.md).
 
@@ -27,21 +27,21 @@ Open [@shut.croft.click](https://bsky.app/profile/shut.croft.click) on Bluesky a
 
 ## What gets labelled
 
-Post text, hashtags, image and video alt text, link card titles and descriptions, and profile display names and bios. A label on a post covers that post only. A label on a profile covers the profile, not the account's posts.
+Post text, hashtags, image and video alt text, link card titles and descriptions, and profile display names and bios. A label on a post covers that post only. A profile label covers the profile, not the account's posts.
 
-| Hit                                       | Examples                                                                                                                                                   | `incel-language` | `incel-language-strict` |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ----------------------- |
-| One distinctive term                      | "incel" itself, dehumanising names for women and men, `-cel` identities, black pill and looksmaxxing vocabulary, "mogging", glorification of incel attacks | labelled         | labelled                |
-| Terms from two different ambiguous groups | "giga chad" with "cope", "hypergamy" with "normies"                                                                                                        | labelled         | labelled                |
-| One ambiguous term                        | "giga chad", "cope", "red pill"                                                                                                                            | not labelled     | labelled                |
-| A coinage on an incel template            | anything ending in "-pilled" or "-maxxing", such as "atprotopilled" or "protocolmaxxing"                                                                   | not labelled     | labelled                |
-| A broad word or phrase                    | "Chad", "toilet", "lockdown", "sigma", "used goods"                                                                                                        | not labelled     | labelled                |
+| Hit                                       | Examples                                                                                                                                                   | Incel language | Incel influenced language |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------------------------- |
+| One distinctive term                      | "incel" itself, dehumanising names for women and men, `-cel` identities, black pill and looksmaxxing vocabulary, "mogging", glorification of incel attacks | labelled       | labelled                  |
+| Terms from two different ambiguous groups | "giga chad" with "cope", "hypergamy" with "normies"                                                                                                        | labelled       | labelled                  |
+| One ambiguous term                        | "giga chad", "cope", "red pill"                                                                                                                            | not labelled   | labelled                  |
+| A coinage on an incel template            | anything ending in "-pilled" or "-maxxing", such as "atprotopilled" or "protocolmaxxing"                                                                   | not labelled   | labelled                  |
+| A broad word or phrase                    | "Chad", "toilet", "lockdown", "sigma", "used goods"                                                                                                        | not labelled   | labelled                  |
 
 Common disguises are undone first: lookalike and styled characters, accents, invisible characters, `f.o.i.d` spacing, number substitutions and stretched letters. The full list is in [`src/detect/lexicon.ts`](labeller/src/detect/lexicon.ts).
 
 ### Limits
 
-- **The strict label is often wrong.** "Cope", "normies" and "red pill" are everyday words, and "sleepmaxxing" or "bskypilled" are ordinary slang now, so most posts with only the strict label are not about incels at all.
+- **The incel influenced language labels are often wrong.** "Cope", "normies" and "red pill" are everyday words, and "sleepmaxxing" or "bskypilled" are ordinary slang now, so most posts with only the influenced label are not about incels at all.
 - **Matching is on words, not meaning.** Quoting or criticising a term gets labelled too. That is intended: the aim is not to see the language.
 - **Every mention of "incel" is labelled**, including news, research and insults. To keep those visible, remove the `incel` rule.
 - **Crossover slang is included.** "Mogging", "looksmaxxing" and "jestermaxxing" are now widely used outside incel spaces. In a dry run on 25 November 2026, 190 of about 1.3 million posts matched: most for the word "incel", and 36 only for "mog" or "looksmaxxing" words. Remove the `mog` and `looksmaxx` rules if that is too much.
@@ -92,7 +92,8 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
 
 ## Running it
 
-- An instance set up before the strict label existed needs `pnpm declare --publish` once, so the account advertises it. Until then, apps ignore it.
+- An instance set up before the profile labels existed, or before the strict label was renamed, needs `pnpm declare --publish` once, so the account advertises the current labels. Until then, apps ignore the new ones.
+- On starting, the labeller moves profiles that were given `incel-language` or `incel-language-strict` before profiles had their own labels: it withdraws those and applies `incel-language-profile` and `incel-language-profile-strict` in their place. After that it finds nothing to move.
 - `data/` holds the label database and the Jetstream position. Back it up. After a restart the labeller resumes where it stopped, as far back as Jetstream still holds events.
 - When an account posts for the first time, the labeller asks Bluesky's public API (`public.api.bsky.app`) for its existing profile, in batches, and judges it. The account is then remembered in the database and not fetched again, even after the word list changes; later edits arrive on the stream. Set `PROFILE_CHECK=off` to disable this.
 - Requests to the public API, and the backfill's requests to the post archive, are rate limited per server. After a 429 nothing more is sent to that server until the time it asks for, and requests slow down as an advertised quota runs low.
@@ -103,7 +104,7 @@ To run your own, you need a **new Bluesky account** for the labeller and a publi
 
 ## Backfill
 
-`pnpm backfill` reads Bluesky's post archive through [Jetstream v2](https://bsky.network/docs/jetstream-replay) and queues the posts that would earn `incel-language`. **It labels and publishes nothing**, and there is not yet a tool that publishes the queue. The queue is for the standard label only: backfilled posts are not meant to get `incel-language-strict`.
+`pnpm backfill` reads Bluesky's post archive through [Jetstream v2](https://bsky.network/docs/jetstream-replay) and queues the posts that would earn `incel-language`. **It labels and publishes nothing**, and there is not yet a tool that publishes the queue. The queue is for the incel language label only: backfilled posts are not meant to get the influenced label, `incel-language-strict`.
 
 1. Create a token at <https://bsky.network/account> and set it as `JETSTREAM_API_KEY` in `.env`. Downloads are metered against it.
 2. Try it for a few minutes with `pnpm backfill --minutes 5`. It reports events, posts, matches, bytes downloaded and speed.
