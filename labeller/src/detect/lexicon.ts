@@ -142,7 +142,7 @@ export const WEAK: Readonly<Record<string, string>> = {
 };
 
 /**
- * Rules that only earn the strict label and never count towards the standard one: coinages
+ * Rules that only earn the influenced labels and never count towards the explicit ones: coinages
  * built on incel templates, such as "<anything>pilled", and broad words from published
  * lexicons that are usually innocent.
  */

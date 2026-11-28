@@ -4,13 +4,13 @@ import { variants } from './normalise.js';
 /** Number of different weak groups needed when there is no strong hit. */
 export const WEAK_THRESHOLD = 2;
 
-/** Number of weak groups needed for the strict label when there is no strong or template hit. */
+/** Number of weak groups needed for the influenced labels when there is no strong or template hit. */
 export const STRICT_WEAK_THRESHOLD = 1;
 
 export interface Verdict {
 	/** Earns the standard label. */
 	matched: boolean;
-	/** Earns the strict label. Always true when `matched` is. */
+	/** Earns the incel influenced language labels. Always true when `matched` is. */
 	strict: boolean;
 	/** Ids of the strong rules that hit. */
 	strong: string[];

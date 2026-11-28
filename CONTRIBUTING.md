@@ -23,7 +23,7 @@ pnpm build
 
 ## Notes for this project
 
-- Terms live in `labeller/src/detect/lexicon.ts`. Use `STRONG` only when one hit is clear on its own; otherwise add to a `WEAK` group. `TEMPLATE` is for open-ended patterns that only earn the strict label.
+- Terms live in `labeller/src/detect/lexicon.ts`. Use `STRONG` only when one hit is clear on its own; otherwise add to a `WEAK` group. `TEMPLATE` is for open-ended patterns that only earn the incel influenced language labels.
 - Add a matching case and a near-miss that must not match to `labeller/test/detect/match.test.ts`.
 - A new rule or group also needs a plain description in `website/src/lib/judge/reasons.ts`. The tests enforce this.
 - List `-cel` words one by one. Never match the suffix alone.

@@ -23,9 +23,9 @@
 		if (!text.trim()) return 'Nothing typed yet.';
 		if (verdict.matched) return 'shut would label this, and subscribers would not see it.';
 		if (verdict.strict && !verdict.weak.length)
-			return 'Only the strict label would apply. Coinages and broad words are not enough for the standard label.';
+			return 'Only the incel influenced language label would apply. Coinages and broad words are not enough for the incel language label.';
 		if (verdict.strict)
-			return `Only the strict label would apply. One ambiguous match is not enough for the standard label; it takes ${WEAK_THRESHOLD} different kinds.`;
+			return `Only the incel influenced language label would apply. One ambiguous match is not enough for the incel language label; it takes ${WEAK_THRESHOLD} different kinds.`;
 		return 'Left alone.';
 	});
 </script>
@@ -116,12 +116,12 @@
 						<dt
 							class="font-(family-name:--font-sign) text-[1.45rem] leading-tight font-extrabold font-stretch-[80%]"
 						>
-							Or switch on the strict label
+							Or switch on incel influenced language
 						</dt>
 						<dd class="mt-2">
-							A second label, off by default, also covers a single ambiguous word, coinages on incel
-							patterns such as “-pilled” and “-maxxing”, and many broad words that are usually
-							innocent. It hides far more, and gets much more wrong.
+							A second label, off by default, for posts and profiles, also covers a single ambiguous
+							word, coinages on incel patterns such as “-pilled” and “-maxxing”, and many broad
+							words that are usually innocent. It hides far more, and gets much more wrong.
 						</dd>
 					</div>
 					<div class="border-y-2 border-paint py-5">
@@ -131,8 +131,8 @@
 							A post label stays on that post
 						</dt>
 						<dd class="mt-2">
-							A label on a profile covers the profile. Neither one hides everything an account says.
-							Edit the language out and the label is withdrawn.
+							A profile has a label of its own, which covers the profile. Neither one hides
+							everything an account says. Edit the language out and the label is withdrawn.
 						</dd>
 					</div>
 				</dl>
@@ -180,8 +180,8 @@
 				{#if LABELLER_HANDLE}
 					<p>
 						Open <a href="https://bsky.app/profile/{LABELLER_HANDLE}">@{LABELLER_HANDLE}</a> on Bluesky
-						and choose to subscribe. Then pick hide, warn or show for each label. The strict label starts
-						off.
+						and choose to subscribe. Then pick hide, warn or show for each label. The incel influenced
+						language labels start off.
 					</p>
 				{:else}
 					<p class="text-2xl font-bold">Not open yet.</p>

@@ -223,10 +223,10 @@ describe('detect', () => {
 	it('adds up weak hits across the parts of one record', () => {
 		assert.equal(detect(['normies', 'pure cope']).matched, true);
 	});
-	it('gives the strict label to every standard match', () => {
+	it('gives the influenced label to every standard match', () => {
 		for (const text of labelled) assert.equal(detect([text]).strict, true, text);
 	});
-	it('gives the strict label, and only that, for one ambiguous group', () => {
+	it('gives the influenced label, and only that, for one ambiguous group', () => {
 		for (const text of [
 			'pure cope',
 			'took the red pill in The Matrix',
@@ -249,7 +249,7 @@ describe('detect', () => {
 			assert.equal(verdict.strict, true, text);
 		}
 	});
-	it('gives the strict label, and only that, for coinages on incel templates', () => {
+	it('gives the influenced label, and only that, for coinages on incel templates', () => {
 		for (const text of [
 			'so atprotopilled lately',
 			'protocolmaxxing all weekend',
@@ -278,7 +278,7 @@ describe('detect', () => {
 			assert.equal(detect([text]).strict, false, text);
 		}
 	});
-	it('gives no strict label to text without any term', () => {
+	it('gives no influenced label to text without any term', () => {
 		for (const text of [
 			'cancel my Excel subscription',
 			'',
@@ -301,7 +301,7 @@ describe('detect', () => {
 			assert.equal(detect([text]).strict, false, text);
 		}
 	});
-	it('gives the strict label, and only that, for broad terms', () => {
+	it('gives the influenced label, and only that, for broad terms', () => {
 		for (const text of [
 			'Chad from accounting is on leave',
 			'chadpreet is my cousin',
